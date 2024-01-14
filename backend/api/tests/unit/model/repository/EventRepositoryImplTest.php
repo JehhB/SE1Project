@@ -4,10 +4,9 @@ use PHPUnit\Framework\TestCase;
 use Model\Entity\Event;
 use Model\Source\DatabaseMock;
 use Model\Repository\EventRepositoryImpl;
-use Model\Source\DatabaseMock as SourceDatabaseMock;
 
 class EventRepositoryImplTest extends TestCase {
-    private SourceDatabaseMock $database;
+    private ?DatabaseMock $database;
 
     public function test_When_AccessingNotExistingEvent_Expect_ReturnNull() {
         $repository = new EventRepositoryImpl($this->database->db);
