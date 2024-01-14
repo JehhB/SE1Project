@@ -2,7 +2,6 @@
 
 namespace Model\Entity;
 
-
 /**
  * @property string $eventId ID corresponding to event
  * @property string $name Name of event

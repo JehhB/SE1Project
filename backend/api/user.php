@@ -5,6 +5,8 @@ require_once __DIR__ . "/lib/autoloader.php";
 use Model\Entity\User;
 use Model\Source\Database;
 use Model\Repository\UserRepositoryImpl;
+use Util\Auth;
+use Util\JWTManager;
 
 session_start();
 
@@ -20,6 +22,8 @@ $database = new Database(
     $_ENV['MYSQL_USER'] ?? 'root',
     $_ENV['MYSQL_PASSWORD'] ?? null,
 );
+$jwtManager = new JWTManager($_ENV['JWT_KEY']);
+$auth = new Auth($jwtManager);
 $userRepository = new UserRepositoryImpl($database->pdo);
 
 switch ($_SERVER['REQUEST_METHOD']) {
@@ -33,14 +37,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case 'POST':
         if (!isset($_POST['action'])) break;
         switch ($_POST['action']) {
-            case 'logout':
-                if (!isset($_SESSION['userId'])) error(500, "Unauthorized request");
-                unset($_SESSION['userId']);
-                break;
             case 'login':
                 if (!isset($_POST['email']) or
                     !isset($_POST['password'])) break;
-                $userRepository->authenticateUser($_POST['email'], $_POST['password']);
+                $userId = $userRepository->authenticateUser($_POST['email'], $_POST['password']);
+                if ($userId === false) error(500, "Unauthorized request"); 
+                $auth->authUser($userId);
+                exit();
                 break;
             case 'signin':
                 if (!isset($_POST['email']) or
@@ -49,9 +52,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) or 
                     strlen($_POST['password']) < 8) break;
                 $user = new User("", $_POST['username'], $_POST['email'], password_hash($_POST['password'], PASSWORD_DEFAULT));
-                $userRepository->addUser($user);
+                $userId = $userRepository->addUser($user);
+                $auth->authUser($userId);
+                exit();
                 break;
-                    
         }
         break;
 

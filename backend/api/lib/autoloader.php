@@ -11,6 +11,8 @@ spl_autoload_register(function ($class) {
             'model\\repository\\userrepository' => '/model/repository/UserRepository.php',
             'model\\repository\\userrepositoryimpl' => '/model/repository//UserRepositoryImpl.php',
             'model\\source\\database' => '/model/source/Database.php',
+            'util\\auth' => '/util/Auth.php',
+            'util\\jwtmanager' => '/util/JWTManager.php',
         );
     }
     $cn = strtolower($class);
