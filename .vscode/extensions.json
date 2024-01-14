@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "jgclark.vscode-todo-highlight",
+        "bmewburn.vscode-intelephense-client",
+        "emallin.phpunit"
+    ]
+}
