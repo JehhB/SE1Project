@@ -37,8 +37,31 @@ class EventRepositoryImplTest extends TestCase {
         $this->assertSame($event->isStrict, $addedEvent->isStrict);
     }
 
+    public function test_When_GettingEventByUserWithNoEvent_Expect_EmptyResult() {
+        $repository = new EventRepositoryImpl($this->database->db);
+        $event = new Event("temp id", "event name", "creatorId", true);
+        $repository->addEvent($event);
+
+        $events = $repository->getEventByUser("user id with no events");
+        $this->assertEmpty($events);
+    }
+
+    public function test_When_GettingEventByUser_Expect_CountOfResultToEqualNumberOfCreatedEvent() {
+        $repository = new EventRepositoryImpl($this->database->db);
+        $userId = "creatorId";
+        $event = new Event("temp id", "event name", $userId, true);
+
+        $repository->addEvent($event);
+        $repository->addEvent($event);
+        $repository->addEvent($event);
+
+        $events = $repository->getEventByUser("user id with no events");
+        $this->assertCount(3, $events);
+    }
+
     protected function setUp(): void {
         $this->database = new DatabaseMock();
+
     }
 
     protected function tearDown(): void {

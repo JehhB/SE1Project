@@ -36,6 +36,13 @@ switch ($_SERVER["REQUEST_METHOD"]) {
             Event::respond($event);
             exit();
         }
+
+        $userId = $auth->getAuth();
+        if ($userId === false) error(500, "Unauthorized");
+
+        header('Content-Type: application/json');
+        echo json_encode($eventRepository->getEventByUser($userId));
+        exit();
         break;
     case 'POST':
         if (!isset($_POST['eventName']) or

@@ -20,5 +20,13 @@ interface EventRepository {
      * @return string id of newly inserted event
     */
     public function addEvent(Event $event): string;
+
+    /**
+     * get event create by user
+     * 
+     * @param string $userId user to find created events
+     * @return Event[]
+     */
+    public function getEventByUser(string $userId): array;
 }
 
