@@ -53,7 +53,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $event = $eventRepository->getEvent($_POST['eventId']);
         if ($event === null) error();
 
-        $registeredEvent = new RegisteredEvent("", $_POST['eventId'], $authPayload['sessId'], $authPayload['userId']);
+        $registeredEvent = new RegisteredEvent("", $_POST['eventId'], $authPayload['sessId'], $authPayload['userId'] ?? null);
         $registeredEventId = $registeredEventRepository->addRegisterEvent($registeredEvent);
 
         header('Content-Type: application/json');

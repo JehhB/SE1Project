@@ -14,6 +14,12 @@ class UserRepositoryImpl implements UserRepository
         $this->db = $db;
     }
 
+    /**
+     * get user associated with $userId
+     * 
+     * @param string $userId id of the user to retrieve
+     * @return ?User null if no user corresponding evendId, otherwise return specified user
+     */
     public function getUser(string $userId): ?User
     {
         $query = "SELECT * FROM users WHERE id = :id";
@@ -31,6 +37,12 @@ class UserRepositoryImpl implements UserRepository
         return new User($result['id'], $result['name'], $result['email'], $result['password_hash']);
     }
 
+    /** 
+     * add new user, and return userId
+     * 
+     * @param User $user to be inserted
+     * @return string id of newly inserted user
+    */
     public function addUser(User $user): string
     {
         $query = "INSERT INTO users (name, email, password_hash) VALUES (:name, :email, :password_hash)";
@@ -44,6 +56,13 @@ class UserRepositoryImpl implements UserRepository
         return $this->db->lastInsertId();
     }
 
+    /** 
+     * Find user that matches email and password
+     * 
+     * @param string $email email of user to authenticate
+     * @param string $password raw password of user
+     * @return string|false id of authenticated user, or false if no match
+    */
     public function authenticateUser(string $email, string $password): string|false
     {
         $query = "SELECT id, password_hash FROM users WHERE email = :email";

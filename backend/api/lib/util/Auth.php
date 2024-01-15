@@ -34,6 +34,7 @@ class Auth {
     public function getAuth() : string|false {
         $payload = $this->getAuthPayload();
         if ($payload === null) return false;
+        if (!isset($payload['userId'])) return false;
         return $payload['userId'];
     }
 
@@ -48,13 +49,30 @@ class Auth {
         return $payload['sessId'];
     }
 
+    public function createSession() {
+        $auth = $this->getAuth();
+
+        $payload = array(
+            'sessId' => uniqid("", true)
+        );
+        $token = $this->jwtManager->createToken($payload);
+
+        header('Content-Type: application/json');
+        echo json_encode(array('token' => $token));
+    }
+
     /**
      * Authenticate userId
      */
     public function authUser(string $userId) {
+        $payload = $this->getAuthPayload();
+
+        $sessid = uniqid("", true);
+        if ($payload !== null) $sessid = $payload['sessId'];
+
         $payload = array(
             'userId' => $userId,
-            'sessId' => uniqid("", true),
+            'sessId' => $sessid,
         );
         $token = $this->jwtManager->createToken($payload);
 
