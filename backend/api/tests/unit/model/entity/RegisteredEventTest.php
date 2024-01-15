@@ -25,7 +25,7 @@ namespace {
             $output = json_decode($this->getActualOutputForAssertion());
             $this->assertSame($registeredEvent->registeredEventId, $output->registeredEventId);
             $this->assertSame($registeredEvent->eventId, $output->eventId);
-            $this->assertSame($registeredEvent->sessionId, $output->name);
+            $this->assertSame($registeredEvent->sessionId, $output->sessionId);
             $this->assertSame($registeredEvent->userId, $output->userId);
         }
 
