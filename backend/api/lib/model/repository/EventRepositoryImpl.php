@@ -42,7 +42,7 @@ class EventRepositoryImpl implements EventRepository
      * 
      * @param Event $event to be inserted
      * @return string id of newly inserted event
-    */
+     */
     public function addEvent(Event $event): string
     {
         $query = "INSERT INTO Events (eventId, eventName, creatorId, isStrict) VALUES (:eventId, :eventName, :creatorId, :isStrict)";
