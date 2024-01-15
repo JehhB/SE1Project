@@ -55,7 +55,7 @@ class EventRepositoryImplTest extends TestCase {
         $repository->addEvent($event);
         $repository->addEvent($event);
 
-        $events = $repository->getEventByUser("user id with no events");
+        $events = $repository->getEventByUser($userId);
         $this->assertCount(3, $events);
     }
 
