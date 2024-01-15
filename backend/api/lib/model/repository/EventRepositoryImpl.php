@@ -16,7 +16,7 @@ class EventRepositoryImpl implements EventRepository
 
     public function getEvent(string $eventId): ?Event
     {
-        $query = "SELECT * FROM events WHERE id = :id";
+        $query = "SELECT * FROM Events WHERE eventId = :id";
         $statement = $this->db->prepare($query);
         $statement->bindParam(':id', $eventId);
         $statement->execute();
@@ -28,18 +28,43 @@ class EventRepositoryImpl implements EventRepository
         }
 
         // Assuming you have a constructor in the Event class that sets properties
-        return new Event($result['id'], $result['evetName'], $result['date']);
+        return new Event($result['eventId'], $result['eventName'], $result['creatorId'], $result['isStrict']);
     }
 
     public function addEvent(Event $event): string
     {
-        $query = "INSERT INTO events (name, date) VALUES (:name, :date)";
+        $query = "INSERT INTO Events (eventId, eventName, creatorId, isStrict) VALUES (:eventId, :eventName, :creatorId, :isStrict)";
+        $id = uniqid();
         $statement = $this->db->prepare($query);
-        $statement->bindParam(':name', $event->getName());
-        $statement->bindParam(':date', $event->getDate());
+        $statement->bindParam(':eventId', $id); // Assuming your Event class has getId() method
+        $statement->bindParam(':eventName', $event->name);
+        $statement->bindParam(':creatorId', $event->creatorId);
+        $statement->bindParam(':isStrict', $event->isStrict, PDO::PARAM_BOOL); // Assuming isStrict is a boolean field
         $statement->execute();
 
         // Return the last inserted ID
-        return $this->db->lastInsertId();
+        return $id;
+    }
+
+    /**
+     * Retrieves events created by a specific user.
+     *
+     * @param string $userId User ID to find created events
+     * @return Event[] Array of Event objects
+     */
+    public function getEventByUser(string $userId): array
+    {
+        $query = "SELECT * FROM Events WHERE creatorId = :creatorId";
+        $statement = $this->db->prepare($query);
+        $statement->bindParam(':creatorId', $userId);
+        $statement->execute();
+
+        $events = [];
+
+        while ($result = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $events[] = new Event($result['eventId'], $result['eventName'], $result['creatorId'], $result['isStrict']);
+        }
+
+        return $events;
     }
 }
