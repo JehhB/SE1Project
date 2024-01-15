@@ -14,6 +14,12 @@ class EventRepositoryImpl implements EventRepository
         $this->db = $db;
     }
 
+    /**
+     * get event associated with eventId
+     * 
+     * @param string $eventId id of the event to retrieve
+     * @return ?Event null if no event corresponding evendId, otherwise return specified event
+     */
     public function getEvent(string $eventId): ?Event
     {
         $query = "SELECT * FROM events WHERE id = :id";
@@ -31,6 +37,12 @@ class EventRepositoryImpl implements EventRepository
         return new Event($result['id'], $result['evetName'], $result['date']);
     }
 
+    /** 
+     * add new event, and return eventId
+     * 
+     * @param Event $event to be inserted
+     * @return string id of newly inserted event
+    */
     public function addEvent(Event $event): string
     {
         $query = "INSERT INTO events (name, date) VALUES (:name, :date)";
