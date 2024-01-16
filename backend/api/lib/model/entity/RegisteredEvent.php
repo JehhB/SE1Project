@@ -40,6 +40,7 @@ class RegisteredEvent {
                 'registeredEventId' => $registeredEvent->registeredEventId,
                 'eventId' => $registeredEvent->eventId,
                 'sessionId' => $registeredEvent->sessionId,
+                'registeredName'=> $registeredEvent->registeredName,
                 'userId' => $registeredEvent->userId,
             ]);
         }
