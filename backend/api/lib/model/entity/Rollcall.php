@@ -5,7 +5,7 @@ namespace Model\Entity;
 /**
  * @property string $rollcallId id of the rollcall
  * @property string $eventId id of the event this rollcall belongs to
- * @property string $location valid location for to take attendance
+ * @property string $location valid location for taking attendance
  * @property string $timeStart timestamp to start taking event
  * @property string $timeEnd timestamp to end taking event
  */
@@ -24,13 +24,27 @@ class Rollcall {
         $this->timeEnd = $timeEnd;
     }
 
-     /**
-     * Function to send a json representation of rollcall as response
-     * error code is 404 if $rollcall is null, otherwise 200
+    /**
+     * Function to send a JSON representation of rollcall as response
+     * Error code is 404 if $rollcall is null, otherwise 200
      * 
-     * @param ?Rollcall $rollcall rall call to send
+     * @param ?Rollcall $rollcall Rollcall to send
      */
     public static function respond(?Rollcall $rollcall) {
-        // TODO: pagawa
+        if ($rollcall === null) {
+            // Rollcall not found, respond with 404
+            http_response_code(404);
+            echo json_encode(['error' => 'Rollcall not found']);
+        } else {
+            // Rollcall found, respond with 200 and the JSON representation
+            http_response_code(200);
+            echo json_encode([
+                'rollcallId' => $rollcall->rollcallId,
+                'eventId' => $rollcall->eventId,
+                'location' => $rollcall->location,
+                'timeStart' => $rollcall->timeStart,
+                'timeEnd' => $rollcall->timeEnd,
+            ]);
+        }
     }
 }
