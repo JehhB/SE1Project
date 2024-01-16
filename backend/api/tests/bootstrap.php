@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../lib/autoloader.php';
+require_once __DIR__ . '/mocked_functions.php';
 
 spl_autoload_register(function ($class) {
     static $classes = null;
