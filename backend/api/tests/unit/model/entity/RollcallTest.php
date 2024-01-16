@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Model\Entity\Rollcall;
 
-final class EventTest extends TestCase {
+final class RollcallTest extends TestCase {
 
     public function test_When_RollcallIsNotNull_Expect_OutputJson() : void {
         $rollcall = new Rollcall("rollcall id", "event id", "location", "timestart", "timeend");
@@ -17,7 +17,7 @@ final class EventTest extends TestCase {
         $this->assertSame($rollcall->timeEnd, $output->timeEnd);
     }
 
-    public function test_When_EventIsNull_Expect_ResponseCodeToBe404() : void { 
+    public function test_When_RollcallIsNull_Expect_ResponseCodeToBe404() : void { 
         Rollcall::respond(null);
         $this->assertSame(404, Model\Entity\http_response_code());
     }
