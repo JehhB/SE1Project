@@ -22,12 +22,23 @@ class RegisteredEvent {
     }
 
     /**
-     * Function to send a json representation of registered as response
-     * error code is 404 if $event is null, otherwise 200
+     * Function to send a JSON representation of registered event as response
+     * error code is 404 if $registeredEvent is null, otherwise 200
      * 
-     * @param ?Event 
+     * @param ?RegisteredEvent 
      */
     public static function respond(?RegisteredEvent $registeredEvent) {
-        // TODO: pagawa
+        if ($registeredEvent === null) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Registered event not found'], JSON_PRETTY_PRINT);
+        } else {
+            http_response_code(200);
+            echo json_encode([
+                'registeredEventId' => $registeredEvent->registeredEventId,
+                'eventId' => $registeredEvent->eventId,
+                'sessionId' => $registeredEvent->sessionId,
+                'userId' => $registeredEvent->userId,
+            ]);
+        }
     }
 }

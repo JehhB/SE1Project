@@ -1,11 +1,13 @@
-CREATE TABLE Users (
+CREATE TABLE Users
+(
     userid VARCHAR(63) PRIMARY KEY,
     userName VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     passwordhash VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Events (
+CREATE TABLE Events
+(
     eventId VARCHAR(63) PRIMARY KEY,
     eventName VARCHAR(255) NOT NULL,
     creatorId VARCHAR(63) NOT NULL,
@@ -13,15 +15,18 @@ CREATE TABLE Events (
     FOREIGN KEY (creatorId) REFERENCES Users(userid)
 );
 
-CREATE TABLE RegisteredEvents (
+CREATE TABLE RegisteredEvents
+(
     registeredEventId VARCHAR(63) PRIMARY KEY,
     eventId VARCHAR(63) NOT NULL,
+    sessionId VARCHAR(63) NOT NULL,
     userId VARCHAR(63),
     FOREIGN KEY (eventId) REFERENCES Events(eventId),
     FOREIGN KEY (userId) REFERENCES Users(userid)
 );
 
-CREATE TABLE Rollcalls (
+CREATE TABLE Rollcalls
+(
     rollcallId VARCHAR(63) PRIMARY KEY,
     eventId VARCHAR(63) NOT NULL,
     location TEXT NOT NULL,
@@ -30,7 +35,8 @@ CREATE TABLE Rollcalls (
     FOREIGN KEY (eventId) REFERENCES Events(eventId)
 );
 
-CREATE TABLE Attendances (
+CREATE TABLE Attendances
+(
     attendanceId VARCHAR(63) PRIMARY KEY,
     registeredEventId VARCHAR(63) NOT NULL,
     rollcallId VARCHAR(63) NOT NULL,

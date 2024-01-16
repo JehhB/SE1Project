@@ -22,9 +22,9 @@ class UserRepositoryImpl implements UserRepository
      */
     public function getUser(string $userId): ?User
     {
-        $query = "SELECT * FROM users WHERE id = :id";
+        $query = "SELECT * FROM Users WHERE userid = :userid";
         $statement = $this->db->prepare($query);
-        $statement->bindParam(':id', $userId);
+        $statement->bindParam(':userid', $userId);
         $statement->execute();
 
         $result = $statement->fetch(PDO::FETCH_ASSOC);
@@ -34,7 +34,7 @@ class UserRepositoryImpl implements UserRepository
         }
 
         // Assuming you have a constructor in the User class that sets properties
-        return new User($result['id'], $result['name'], $result['email'], $result['password_hash']);
+        return new User($result['userid'], $result['userName'], $result['email'], $result['passwordhash']);
     }
 
     /** 
@@ -45,15 +45,17 @@ class UserRepositoryImpl implements UserRepository
     */
     public function addUser(User $user): string
     {
-        $query = "INSERT INTO users (name, email, password_hash) VALUES (:name, :email, :password_hash)";
+        $query = "INSERT INTO Users (userName, email, passwordhash,userid) VALUES (:userName, :email, :passwordhash,:userid)";
+        $id = uniqid();
         $statement = $this->db->prepare($query);
-        $statement->bindParam(':name', $user->name);
+        $statement->bindParam(':userid', $id); // Assuming your Event class has getId() method
+        $statement->bindParam(':userName', $user->name);
         $statement->bindParam(':email', $user->email);
-        $statement->bindParam(':password_hash', $user->passwordHash);
+        $statement->bindParam(':passwordhash', $user->passwordHash);
         $statement->execute();
 
         // Return the last inserted ID
-        return $this->db->lastInsertId();
+        return $id;
     }
 
     /** 
@@ -65,17 +67,17 @@ class UserRepositoryImpl implements UserRepository
     */
     public function authenticateUser(string $email, string $password): string|false
     {
-        $query = "SELECT id, password_hash FROM users WHERE email = :email";
+        $query = "SELECT userid, passwordhash FROM Users WHERE email = :email";
         $statement = $this->db->prepare($query);
         $statement->bindParam(':email', $email);
         $statement->execute();
 
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if (!$result || !password_verify($password, $result['password_hash'])) {
+        if (!$result || !password_verify($password, $result['passwordhash'])) {
             return false; // Authentication failed
         }
 
-        return $result['id']; // Return the user ID on successful authentication
+        return $result['userid']; // Return the user ID on successful authentication
     }
 }

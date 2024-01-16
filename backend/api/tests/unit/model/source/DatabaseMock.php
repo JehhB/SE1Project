@@ -4,10 +4,12 @@ namespace Model\Source;
 
 use PDO;
 
-class DatabaseMock {
+class DatabaseMock
+{
     public ?PDO $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = new PDO('sqlite::memory:');
         $this->db->exec('
             CREATE TABLE Users (
@@ -30,6 +32,7 @@ class DatabaseMock {
             CREATE TABLE RegisteredEvents (
                 registeredEventId TEXT PRIMARY KEY,
                 eventId TEXT NOT NULL,
+                sessionId TEXT NOT NULL,
                 userId TEXT,
                 FOREIGN KEY (eventId) REFERENCES Events(eventId),
                 FOREIGN KEY (userId) REFERENCES Users(userid)
