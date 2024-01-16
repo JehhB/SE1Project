@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class RegisteredEventTest extends TestCase {
     public function test_When_RegisteredEventIsNotNull_Expect_OutputJson() : void {
-        $registeredEvent = new RegisteredEvent("registeredEventId", "event id", "session id", "user id");
+        $registeredEvent = new RegisteredEvent("registeredEventId", "event id", "session id", "registered name", "user id");
 
         RegisteredEvent::respond($registeredEvent);
         $output = json_decode($this->getActualOutputForAssertion());
