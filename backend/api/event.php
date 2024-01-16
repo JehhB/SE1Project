@@ -9,8 +9,6 @@ use Model\Repository\UserRepositoryImpl;
 use Util\Auth;
 use Util\JWTManager;
 
-session_start();
-
 $database = new Database(
     $_ENV['MYSQL_HOST'] ?? 'localhost',
     $_ENV['MYSQL_DATABASE'] ?? 'database',
