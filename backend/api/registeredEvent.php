@@ -49,11 +49,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $authPayload = $auth->getAuthPayload();
         if ($authPayload === null) error(500, "Unauthorized reqest");
 
-        if (!isset($_POST['eventId'])) error();
+        if (!isset($_POST['eventId']) || !isset($_POST['registeredName'])) error();
         $event = $eventRepository->getEvent($_POST['eventId']);
         if ($event === null) error();
 
-        $registeredEvent = new RegisteredEvent("", $_POST['eventId'], $authPayload['sessId'], $authPayload['userId'] ?? null);
+        $registeredEvent = new RegisteredEvent("", $_POST['eventId'], $authPayload['sessId'], $_POST['registeredName'], $authPayload['userId'] ?? null);
         $registeredEventId = $registeredEventRepository->addRegisterEvent($registeredEvent);
 
         header('Content-Type: application/json');

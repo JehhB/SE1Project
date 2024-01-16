@@ -13,7 +13,7 @@ class DatabaseMock
         $this->db = new PDO('sqlite::memory:');
         $this->db->exec('
             CREATE TABLE Users (
-                userid TEXT PRIMARY KEY,
+                userId TEXT PRIMARY KEY,
                 userName TEXT NOT NULL,
                 email TEXT NOT NULL,
                 passwordhash TEXT NOT NULL
@@ -33,6 +33,7 @@ class DatabaseMock
                 registeredEventId TEXT PRIMARY KEY,
                 eventId TEXT NOT NULL,
                 sessionId TEXT NOT NULL,
+                registeredName TEXT NOT NULL,
                 userId TEXT,
                 FOREIGN KEY (eventId) REFERENCES Events(eventId),
                 FOREIGN KEY (userId) REFERENCES Users(userid)

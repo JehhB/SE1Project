@@ -1,6 +1,6 @@
 CREATE TABLE Users
 (
-    userid VARCHAR(63) PRIMARY KEY,
+    userId VARCHAR(63) PRIMARY KEY,
     userName VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     passwordhash VARCHAR(255) NOT NULL
@@ -20,6 +20,7 @@ CREATE TABLE RegisteredEvents
     registeredEventId VARCHAR(63) PRIMARY KEY,
     eventId VARCHAR(63) NOT NULL,
     sessionId VARCHAR(63) NOT NULL,
+    registeredName varchar(255) NOT NULL,
     userId VARCHAR(63),
     FOREIGN KEY (eventId) REFERENCES Events(eventId),
     FOREIGN KEY (userId) REFERENCES Users(userid)
