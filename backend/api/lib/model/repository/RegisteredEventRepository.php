@@ -29,4 +29,15 @@ interface RegisteredEventRepository {
      * @return RegisteredEvent[] return array of registered events by the user
      */
     public function getRegisteredEventsOfUser(string $userId): array;
+
+    /**
+     * get registered events depending on authentication, 
+     * if event is strict only return registered events with same sessionId
+     * otherwise return registered events with same userId
+     * 
+     * @param ?string $userId id of user
+     * @param string $sessionId id of session to check
+     * @return RegisteredEvent[] return array of registered events by the session
+     */
+    public function getRegisteredEventByAuth(?string $userId, string $sessionId) : array;
 }

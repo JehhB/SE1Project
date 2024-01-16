@@ -21,8 +21,10 @@ class JWTManager {
 
     public function validateToken($token)
     {
-        list($base64UrlHeader, $base64UrlPayload, $base64UrlSignature) = explode('.', $token);
+        $list = explode('.', $token);
+        if ($list === false or count($list) != 3) return false;
 
+        list($base64UrlHeader, $base64UrlPayload, $base64UrlSignature) = $list;
         $signature = $this->base64UrlDecode($base64UrlSignature);
         $expectedSignature = hash_hmac('sha256', $base64UrlHeader . '.' . $base64UrlPayload, $this->secretKey, true);
 
@@ -31,7 +33,10 @@ class JWTManager {
 
     public function decodeToken($token)
     {
-        list(, $base64UrlPayload, ) = explode('.', $token);
+        $list = explode('.', $token);
+        if ($list === false or count($list) != 3) return false;
+        list(, $base64UrlPayload, ) = $list;
+
         $payload = $this->base64UrlDecode($base64UrlPayload);
         return json_decode($payload, true);
     }

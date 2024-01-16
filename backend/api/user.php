@@ -42,7 +42,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     !isset($_POST['password'])
                 ) break;
                 $userId = $userRepository->authenticateUser($_POST['email'], $_POST['password']);
-                if ($userId === false) error(500, "Unauthorized request");
+                if ($userId === false) error(401, "Unauthorized request");
                 $auth->authUser($userId);
                 exit();
                 break;

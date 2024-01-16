@@ -82,4 +82,35 @@ public function getRegisteredEvent(string $registeredEventId): ?RegisteredEvent
 
         return $registeredEvents;
     }
+
+    /**
+     * get registered events depending on authentication, 
+     * if event is strict only return registered events with same sessionId
+     * otherwise return registered events with same userId
+     * 
+     * @param ?string $userId id of user
+     * @param string $sessionId id of session to check
+     * @return RegisteredEvent[] return array of registered events by the session
+     */
+    public function getRegisteredEventByAuth(?string $userId, string $sessionId) : array {
+        $query = "SELECT re.* 
+                  FROM RegisteredEvents re 
+                  JOIN Events e ON re.eventId = e.eventId
+                  WHERE (e.isStrict = true AND re.sessionId = :sessionId)
+                     OR (e.isStrict = false AND (re.userId = :userId OR re.sessionId = :sessionId))";
+
+        $statement = $this->db->prepare($query);
+        $statement->bindParam(':userId', $userId);
+        $statement->bindParam(':sessionId', $sessionId);
+        $statement->execute();
+
+        $registeredEvents = [];
+
+        while ($result = $statement->fetch(PDO::FETCH_ASSOC)) {
+            // Assuming you have a constructor in the RegisteredEvent class that sets properties
+            $registeredEvents[] = new RegisteredEvent($result['registeredEventId'], $result['eventId'], $result['sessionId'], $result['registeredName'], $result['userId']);
+        }
+
+        return $registeredEvents;
+    }
 }

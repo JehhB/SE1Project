@@ -9,6 +9,7 @@ services:
     volumes:
       - ./backend/api:/var/www/html/api
     environment:
+      JWT_KEY: asdoijfafjwekj2kj
       MODE_DEPLOY: development
       MYSQL_HOST: database
       MYSQL_DATABASE: database

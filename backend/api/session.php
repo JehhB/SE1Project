@@ -8,6 +8,6 @@ use Util\Auth;
 $jwtManager = new JWTManager($_ENV['JWT_KEY']);
 $auth = new Auth($jwtManager);
 
-if($_SESSION['REQUEST_METHOD'] == 'GET') {
+if($_SERVER['REQUEST_METHOD'] == 'GET') {
     $auth->createSession();
 }
