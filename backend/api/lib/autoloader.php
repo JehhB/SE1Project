@@ -4,10 +4,13 @@ spl_autoload_register(function ($class) {
     static $classes = null;
     if ($classes === null) {
         $classes = array(
+            'model\\entity\\attendance' => '/model/entity/Attendance.php',
             'model\\entity\\event' => '/model/entity/Event.php',
             'model\\entity\\registeredevent' => '/model/entity/RegisteredEvent.php',
             'model\\entity\\rollcall' => '/model/entity/Rollcall.php',
             'model\\entity\\user' => '/model/entity/User.php',
+            'model\\repository\\Attendancerepository' => '/model/repository/AttendanceRepository.php',
+            'model\\repository\\Attendancerepositoryimpl' => '/model/repository/AttendanceRepositoryImpl.php',
             'model\\repository\\eventrepository' => '/model/repository/EventRepository.php',
             'model\\repository\\eventrepositoryimpl' => '/model/repository/EventRepositoryImpl.php',
             'model\\repository\\registeredeventrepository' => '/model/repository/RegisteredEventRepository.php',

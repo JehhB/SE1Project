@@ -1,6 +1,5 @@
 <?php
 
-
 require_once __DIR__ . '/lib/autoloader.php';
 
 use Model\Entity\Event;
@@ -8,7 +7,6 @@ use Model\Entity\Rollcall;
 use Model\Source\Database;
 use Model\Repository\EventRepositoryImpl;
 use Model\Repository\RollcallRepositoryImpl;
-use Model\Repository\UserRepositoryImpl;
 use Util\JWTManager;
 use Util\Auth;
 

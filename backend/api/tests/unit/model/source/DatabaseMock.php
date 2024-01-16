@@ -55,7 +55,6 @@ class DatabaseMock
                 registeredEventId TEXT NOT NULL,
                 rollcallId TEXT NOT NULL,
                 timestamp DATETIME NOT NULL,
-                isAccepted BOOLEAN,
                 FOREIGN KEY (registeredEventId) REFERENCES RegisteredEvents(registeredEventId),
                 FOREIGN KEY (rollcallId) REFERENCES Rollcalls(rollcallId)
             )

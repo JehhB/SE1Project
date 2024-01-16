@@ -42,7 +42,6 @@ CREATE TABLE Attendances
     registeredEventId VARCHAR(63) NOT NULL,
     rollcallId VARCHAR(63) NOT NULL,
     timestamp DATETIME NOT NULL,
-    isAccepted BOOLEAN,
     FOREIGN KEY (registeredEventId) REFERENCES RegisteredEvents(registeredEventId),
     FOREIGN KEY (rollcallId) REFERENCES Rollcalls(rollcallId)
 );
