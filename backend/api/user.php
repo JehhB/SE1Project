@@ -8,8 +8,6 @@ use Model\Repository\UserRepositoryImpl;
 use Util\Auth;
 use Util\JWTManager;
 
-session_start();
-
 function error(int $errorCode = 400, string $errorMessage = "Invalid request")
 {
     http_response_code($errorCode);
