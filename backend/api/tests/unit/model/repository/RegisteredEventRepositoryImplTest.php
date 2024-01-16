@@ -5,17 +5,20 @@ use Model\Repository\RegisteredEventRepositoryImpl;
 use Model\Source\DatabaseMock;
 use PHPUnit\Framework\TestCase;
 
-class RegisteredRegisteredEventRepositoryImplTest extends TestCase {
+class RegisteredRegisteredEventRepositoryImplTest extends TestCase
+{
     private ?DatabaseMock $database = null;
 
-    public function test_When_AccessingNotExistingRegisteredEvent_Expect_ReturnNull() {
+    public function test_When_AccessingNotExistingRegisteredEvent_Expect_ReturnNull()
+    {
         $repository = new RegisteredEventRepositoryImpl($this->database->db);
         $registeredEvent = $repository->getRegisteredEvent("not existing registered event id");
 
         $this->assertNull($registeredEvent);
     }
 
-    public function test_When_AddingNewRegisteredEvent_Expect_ReturnNewRegisterdEventId() {
+    public function test_When_AddingNewRegisteredEvent_Expect_ReturnNewRegisterdEventId()
+    {
         $repository = new RegisteredEventRepositoryImpl($this->database->db);
         $regEvent = new RegisteredEvent("temp id", "event id", "session id", null);
 
@@ -24,7 +27,8 @@ class RegisteredRegisteredEventRepositoryImplTest extends TestCase {
         $this->assertNotSame($regEvent->eventId, $regEventId);
     }
 
-    public function test_When_AddingNewRegisteredEvent_Expect_AddedRegisteredEventToHaveSameValues() {
+    public function test_When_AddingNewRegisteredEvent_Expect_AddedRegisteredEventToHaveSameValues()
+    {
         $repository = new RegisteredEventRepositoryImpl($this->database->db);
         $regEvent = new RegisteredEvent("temp id", "event id", "session id", null);
 
@@ -37,7 +41,8 @@ class RegisteredRegisteredEventRepositoryImplTest extends TestCase {
         $this->assertSame($regEvent->userId, $addedRegEvent->userId);
     }
 
-    public function test_When_GettingRegisteredEventByUserWithNoEvent_Expect_EmptyResult() {
+    public function test_When_GettingRegisteredEventByUserWithNoEvent_Expect_EmptyResult()
+    {
         $repository = new RegisteredEventRepositoryImpl($this->database->db);
         $regEvent = new RegisteredEvent("temp id", "event id", "session id", null);
         $repository->addRegisterEvent($regEvent);
@@ -46,7 +51,8 @@ class RegisteredRegisteredEventRepositoryImplTest extends TestCase {
         $this->assertEmpty($events);
     }
 
-    public function test_When_GettingRegisteredEventByUser_Expect_CountOfResultToEqualNumberOfRegisteredEvent() {
+    public function test_When_GettingRegisteredEventByUser_Expect_CountOfResultToEqualNumberOfRegisteredEvent()
+    {
         $repository = new RegisteredEventRepositoryImpl($this->database->db);
         $userId = "creatorId";
         $regEvent = new RegisteredEvent("temp id", "event id", "session id", $userId);
@@ -59,11 +65,13 @@ class RegisteredRegisteredEventRepositoryImplTest extends TestCase {
         $this->assertCount(3, $events);
     }
 
-    protected function setUp() {
-        $database = new DatabaseMock();
+    protected function setUp(): void
+    {
+        $this->database = new DatabaseMock();
     }
 
-    protected function tearDown() {
-        $database = null;
+    protected function tearDown(): void
+    {
+        $this->database = null;
     }
 }
