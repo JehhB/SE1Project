@@ -22,9 +22,9 @@ class UserRepositoryImpl implements UserRepository
      */
     public function getUser(string $userId): ?User
     {
-        $query = "SELECT * FROM Users WHERE userid = :userid";
+        $query = "SELECT * FROM Users WHERE userId = :userId";
         $statement = $this->db->prepare($query);
-        $statement->bindParam(':userid', $userId);
+        $statement->bindParam(':userId', $userId);
         $statement->execute();
 
         $result = $statement->fetch(PDO::FETCH_ASSOC);
@@ -34,7 +34,7 @@ class UserRepositoryImpl implements UserRepository
         }
 
         // Assuming you have a constructor in the User class that sets properties
-        return new User($result['userid'], $result['userName'], $result['email'], $result['passwordhash']);
+        return new User($result['userId'], $result['userName'], $result['email'], $result['passwordhash']);
     }
 
     /** 
@@ -45,10 +45,10 @@ class UserRepositoryImpl implements UserRepository
     */
     public function addUser(User $user): string
     {
-        $query = "INSERT INTO Users (userName, email, passwordhash,userid) VALUES (:userName, :email, :passwordhash,:userid)";
+        $query = "INSERT INTO Users (userName, email, passwordhash,userId) VALUES (:userName, :email, :passwordhash,:userId)";
         $id = uniqid();
         $statement = $this->db->prepare($query);
-        $statement->bindParam(':userid', $id); // Assuming your Event class has getId() method
+        $statement->bindParam(':userId', $id); // Assuming your Event class has getId() method
         $statement->bindParam(':userName', $user->name);
         $statement->bindParam(':email', $user->email);
         $statement->bindParam(':passwordhash', $user->passwordHash);
@@ -67,7 +67,7 @@ class UserRepositoryImpl implements UserRepository
     */
     public function authenticateUser(string $email, string $password): string|false
     {
-        $query = "SELECT userid, passwordhash FROM Users WHERE email = :email";
+        $query = "SELECT userId, passwordhash FROM Users WHERE email = :email";
         $statement = $this->db->prepare($query);
         $statement->bindParam(':email', $email);
         $statement->execute();
@@ -78,6 +78,6 @@ class UserRepositoryImpl implements UserRepository
             return false; // Authentication failed
         }
 
-        return $result['userid']; // Return the user ID on successful authentication
+        return $result['userId']; // Return the user ID on successful authentication
     }
 }
