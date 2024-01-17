@@ -1,13 +1,67 @@
 import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {PaperProvider, BottomNavigation} from 'react-native-paper';
+import {NavigationContainer} from '@react-navigation/native';
 import EventLogInToCreate from './src/EventLogInToCreate';
 import HomeScreen from './src/HomeScreen';
 import LogInPage from './src/LogInPage';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigation';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import SignUpPage from './src/SignUpPage';
+import HomeNoEvent from './src/HomeNoEvent';
+import ProfileScreen from './src/ProfileScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const Stack = createNativeStackNavigator();
+const Tab = createMaterialBottomTabNavigator();
+
+const IndexScreen = () => {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="home"
+        component={HomeScreen}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({focused, color}) => (
+            <Icon
+              name={focused ? 'home' : 'home-outline'}
+              size={26}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="events"
+        component={EventLogInToCreate}
+        options={{
+          tabBarLabel: 'Events',
+          tabBarIcon: ({focused, color}) => (
+            <Icon
+              name={focused ? 'calendar' : 'calendar-outline'}
+              size={26}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="profile"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({focused, color}) => (
+            <Icon
+              name={focused ? 'account' : 'account-outline'}
+              size={26}
+              color={color}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
 
 function App(): React.JSX.Element {
   const [index, setIndex] = React.useState(0);
@@ -32,19 +86,15 @@ function App(): React.JSX.Element {
     },
   ]);
 
-  const renderScene = BottomNavigation.SceneMap({
-    home: HomeScreen,
-    event: EventLogInToCreate,
-    profile: LogInPage,
-  });
-
   return (
     <PaperProvider>
-      <BottomNavigation
-        navigationState={{index, routes}}
-        onIndexChange={setIndex}
-        renderScene={renderScene}
-      />
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="index" component={IndexScreen} />
+          <Stack.Screen name="login" component={LogInPage} />
+          <Stack.Screen name="signup" component={SignUpPage} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </PaperProvider>
   );
 }

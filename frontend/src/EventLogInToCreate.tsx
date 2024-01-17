@@ -2,55 +2,32 @@ import React, {useState} from 'react';
 import {TextInput, Button} from 'react-native-paper';
 import {Text, View, StyleSheet, ScrollView, Image} from 'react-native';
 
-export default function EventLogInToCreate() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+export interface EventLogInToCreateProps {
+  gotoLoginPage: () => void;
+  gotoSigninPage: () => void;
+}
 
-  const handleLogin = () => {
-    console.log(
-      'Login pressed with username:',
-      username,
-      'and password:',
-      password,
-    );
-  };
-
-  const handleSignUp = () => {
-    console.log('Sign Up pressed');
-  };
-
+export default function EventLogInToCreate({
+  gotoLoginPage,
+  gotoSigninPage,
+}: EventLogInToCreateProps) {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
         <View style={styles.logoContainer}>
           <Text style={styles.overviewLabel}>Log in to Create Event</Text>
         </View>
-        <TextInput
-          label="Username"
-          value={username}
-          onChangeText={text => setUsername(text)}
-          style={styles.textInput}
-          mode="outlined"
-        />
-        <TextInput
-          label="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={text => setPassword(text)}
-          style={styles.textInput}
-          mode="outlined"
-        />
         <Button
           style={styles.button}
           mode="contained"
-          onPress={handleLogin}
+          onPress={gotoLoginPage}
           labelStyle={styles.buttonLabel}>
           Log In
         </Button>
         <Button
           style={styles.button}
           mode="outlined"
-          onPress={handleSignUp}
+          onPress={gotoSigninPage}
           labelStyle={styles.buttonLabel}>
           Sign Up
         </Button>
