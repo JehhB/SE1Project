@@ -9,5 +9,10 @@ $jwtManager = new JWTManager($_ENV['JWT_KEY']);
 $auth = new Auth($jwtManager);
 
 if($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $auth->createSession();
-}
+    $session = $auth->getSession();
+    if (isset($_GET['logout']) and $session !== false) {
+        $auth->sendSession($session);
+    } else {
+        $auth->createSession();
+    }
+} 

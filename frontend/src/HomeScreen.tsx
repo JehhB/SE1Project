@@ -4,9 +4,13 @@ import {View, StyleSheet, ScrollView} from 'react-native';
 
 export type HomeScreenProps = {
   gotoEventCreation: () => void;
+  joinEvent: (eventId: string) => void;
 };
 
-export default function HomeScreen({gotoEventCreation}: HomeScreenProps) {
+export default function HomeScreen({
+  gotoEventCreation,
+  joinEvent,
+}: HomeScreenProps) {
   const [text, setText] = useState('');
 
   return (
@@ -23,7 +27,7 @@ export default function HomeScreen({gotoEventCreation}: HomeScreenProps) {
         </View>
         <Button
           mode="contained"
-          onPress={gotoEventCreation}
+          onPress={() => joinEvent(text)}
           style={styles.button}
           labelStyle={styles.buttonLabel}>
           JOIN NOW
@@ -32,10 +36,10 @@ export default function HomeScreen({gotoEventCreation}: HomeScreenProps) {
       <View>
         <Button
           mode="text"
-          onPress={() => console.log('Pressed')}
           style={styles.button2}
-          labelStyle={styles.buttonLabel2}>
-          Create event?
+          labelStyle={styles.buttonLabel2}
+          onPress={gotoEventCreation}>
+          Create event
         </Button>
       </View>
     </ScrollView>

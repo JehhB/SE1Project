@@ -1,32 +1,21 @@
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {changeToken, selectToken} from './slice/sessionSlice';
+import React from 'react';
 import HomeScreen from './HomeScreen';
-import axios from 'axios';
+import {decodeJWT} from './lib/jwt';
+import {useSelector} from 'react-redux';
+import {selectToken} from './slice/sessionSlice';
 
-export default function HomeContainer() {
+export default function HomeContainer({navigation}: any) {
   const token = useSelector(selectToken);
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (token !== null) return;
+  const auth = token == null ? null : decodeJWT(token);
+  const isAuth = auth != null && auth.userId != null;
 
-    const intervalId = setInterval(() => {
-      if (token) clearInterval(intervalId);
-      axios
-        .get('/api/session.php')
-        .then(response => {
-          console.log(response.data);
-          if (token == null) dispatch(changeToken(response.data.token));
-          clearInterval(intervalId);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }, 2500);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  return <HomeScreen gotoEventCreation={() => {}} />;
+  return (
+    <HomeScreen
+      joinEvent={() => {}}
+      gotoEventCreation={() =>
+        navigation.navigate(isAuth ? 'eventCreate' : 'events')
+      }
+    />
+  );
 }
