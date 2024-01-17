@@ -1,15 +1,18 @@
 import React from 'react';
 import {PaperProvider, BottomNavigation} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
-import EventLogInToCreate from './src/EventLogInToCreate';
 import HomeScreen from './src/HomeScreen';
-import LogInPage from './src/LogInPage';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import SignUpPage from './src/SignUpPage';
-import HomeNoEvent from './src/HomeNoEvent';
 import ProfileScreen from './src/ProfileScreen';
+import EventContainer from './src/EventContainer';
+import SignUpContainer from './src/SignUpContainer';
+import LogInContainer from './src/LogInContainer';
+import {persistor, store} from './src/store/store';
+import {PersistGate} from 'redux-persist/integration/react';
+import {Provider} from 'react-redux';
+import HomeContainer from './src/HomeContainer';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -19,7 +22,7 @@ const IndexScreen = () => {
     <Tab.Navigator>
       <Tab.Screen
         name="home"
-        component={HomeScreen}
+        component={HomeContainer}
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({focused, color}) => (
@@ -33,7 +36,7 @@ const IndexScreen = () => {
       />
       <Tab.Screen
         name="events"
-        component={EventLogInToCreate}
+        component={EventContainer}
         options={{
           tabBarLabel: 'Events',
           tabBarIcon: ({focused, color}) => (
@@ -64,37 +67,19 @@ const IndexScreen = () => {
 };
 
 function App(): React.JSX.Element {
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    {
-      key: 'home',
-      title: 'Home',
-      focusedIcon: 'home',
-      unfocusedIcon: 'home-outline',
-    },
-    {
-      key: 'event',
-      title: 'Event',
-      focusedIcon: 'calendar',
-      unfocusedIcon: 'calendar-outline',
-    },
-    {
-      key: 'profile',
-      title: 'Profile',
-      focusedIcon: 'account',
-      unfocusedIcon: 'account-outline',
-    },
-  ]);
-
   return (
     <PaperProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name="index" component={IndexScreen} />
-          <Stack.Screen name="login" component={LogInPage} />
-          <Stack.Screen name="signup" component={SignUpPage} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+              <Stack.Screen name="index" component={IndexScreen} />
+              <Stack.Screen name="login" component={LogInContainer} />
+              <Stack.Screen name="signup" component={SignUpContainer} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </PersistGate>
+      </Provider>
     </PaperProvider>
   );
 }
