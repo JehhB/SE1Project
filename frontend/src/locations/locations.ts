@@ -39,6 +39,6 @@ const locations = [
       [17.6602050528208, 121.7533345751153],
     ],
   }, // Library
-];
+] as {image: any; name: string; coordinates: [lat: number, lng: number][]}[];
 
 export default locations;

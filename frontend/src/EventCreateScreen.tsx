@@ -38,7 +38,13 @@ const EventCreateScreen = ({createEvent}: EventCreateScreenProp) => {
   const theme = useTheme();
 
   const handleCreateEvent = () => {
-    console.log({timeStart, timeEnd});
+    createEvent(
+      eventName,
+      true,
+      timeStart,
+      timeEnd,
+      locations[locationId].coordinates,
+    );
   };
 
   const styles = StyleSheet.create({

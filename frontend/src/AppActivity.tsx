@@ -11,7 +11,7 @@ import ProfileContainer from './ProfileContainer';
 import EventContainer from './EventContainer';
 import {useSession} from './lib/useSession';
 import useUserCache from './lib/useUserCache';
-import EventCreateScreen from './EventCreateScreen';
+import EventCreateContainer from './EventCreateContainer';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -75,7 +75,7 @@ export default function AppActivity() {
         <Stack.Screen name="index" component={IndexScreen} />
         <Stack.Screen name="login" component={LogInContainer} />
         <Stack.Screen name="signup" component={SignUpContainer} />
-        <Stack.Screen name="eventCreate" component={EventCreateScreen} />
+        <Stack.Screen name="eventCreate" component={EventCreateContainer} />
       </Stack.Navigator>
     </NavigationContainer>
   );
