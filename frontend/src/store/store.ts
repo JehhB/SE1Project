@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Tuple, configureStore} from '@reduxjs/toolkit';
 import sessionReducer from '../slice/sessionSlice';
 import userCacheReducer from '../slice/userCacheSlice';
+import eventsCacheReducer from '../slice/eventsCacheSlice';
 import {persistStore, persistReducer} from 'redux-persist';
 import {thunk} from 'redux-thunk';
 
@@ -21,10 +22,19 @@ export const persistUserCacheReducer = persistReducer(
   userCacheReducer,
 );
 
+export const persistEventsCacheReducer = persistReducer(
+  {
+    key: 'eventsCache',
+    storage: AsyncStorage,
+  },
+  eventsCacheReducer,
+);
+
 export const store = configureStore({
   reducer: {
     session: persistSessionReducer,
     userCache: persistUserCacheReducer,
+    eventsCache: persistEventsCacheReducer,
   },
   middleware: () => new Tuple(thunk),
 });

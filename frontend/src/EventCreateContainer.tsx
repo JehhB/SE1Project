@@ -1,12 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import EventCreateScreen from './EventCreateScreen';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {selectToken} from './slice/sessionSlice';
 import axios from 'axios';
 import {format} from 'date-fns';
+import {clearEventsCache} from './slice/eventsCacheSlice';
 
-export default function EventCreateContainer() {
+export default function EventCreateContainer({navigation}: any) {
+  const [errorVisible, setErrorVisibility] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
   const token = useSelector(selectToken);
+  const dispatch = useDispatch();
+
   const headers = {
     'Content-Type': 'application/x-www-form-urlencoded',
   } as any;
@@ -28,6 +34,8 @@ export default function EventCreateContainer() {
       .post('/api/event.php', eventData, {headers})
       .then(respone => {
         console.log(respone.data);
+        dispatch(clearEventsCache());
+
         axios
           .post(
             '/api/rollcall.php',
@@ -41,11 +49,25 @@ export default function EventCreateContainer() {
           )
           .then(respone => {
             console.log(respone.data);
+            navigation.navigate('events');
           })
-          .catch(error => console.log({rollcall: 'rollcall', error}));
+          .catch(error => {
+            setErrorMessage('Error while creating rollcall');
+            setErrorVisibility(true);
+          });
       })
-      .catch(error => console.log({event: 'event', error}));
+      .catch(error => {
+        setErrorMessage('Error while creating event');
+        setErrorVisibility(true);
+      });
   }
 
-  return <EventCreateScreen createEvent={createEvent} />;
+  return (
+    <EventCreateScreen
+      createEvent={createEvent}
+      errorVisible={errorVisible}
+      errorMessage={errorMessage}
+      dimissError={() => setErrorVisibility(false)}
+    />
+  );
 }

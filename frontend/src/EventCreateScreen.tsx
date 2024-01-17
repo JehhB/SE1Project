@@ -8,6 +8,7 @@ import {
   RadioButton,
   Surface,
   TouchableRipple,
+  Snackbar,
 } from 'react-native-paper';
 import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
 import locations from './locations/locations';
@@ -23,9 +24,17 @@ export type EventCreateScreenProp = {
     timeEnd: Date,
     location: [lng: number, lat: number][],
   ): void;
+  errorMessage: string;
+  errorVisible: boolean;
+  dimissError: () => void;
 };
 
-const EventCreateScreen = ({createEvent}: EventCreateScreenProp) => {
+const EventCreateScreen = ({
+  createEvent,
+  errorMessage,
+  errorVisible,
+  dimissError,
+}: EventCreateScreenProp) => {
   const [eventName, setEventName] = useState('');
   const [dateVisibility, setDateVisibility] = useState(false);
   const [timeStartPickerVisibility, showTimeStart] = useState(false);
@@ -225,6 +234,12 @@ const EventCreateScreen = ({createEvent}: EventCreateScreenProp) => {
           }}
         />
       </View>
+      <Snackbar
+        visible={errorVisible}
+        onDismiss={dimissError}
+        action={{label: 'Dismiss', onPress: dimissError}}>
+        {errorMessage}
+      </Snackbar>
     </ScrollView>
   );
 };

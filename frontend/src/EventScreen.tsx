@@ -1,6 +1,12 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {FAB, Surface, Text, TouchableRipple} from 'react-native-paper';
+import {
+  FAB,
+  Surface,
+  Text,
+  TouchableRipple,
+  useTheme,
+} from 'react-native-paper';
 
 function EmptyList() {
   return <Text variant="labelLarge">No events</Text>;
@@ -8,13 +14,22 @@ function EmptyList() {
 
 export type EventScreenProps = {
   events: {eventId: string; eventName: string}[];
-  createEvent: () => {};
+  createEvent: () => void;
+  refetchEvent: () => void;
 };
 
-export default function EventScreen({events, createEvent}: EventScreenProps) {
+export default function EventScreen({
+  events,
+  createEvent,
+  refetchEvent,
+}: EventScreenProps) {
+  const theme = useTheme();
+
   return (
     <View style={styles.container}>
-      <Text variant="headlineMedium">Events</Text>
+      <TouchableRipple onPress={refetchEvent}>
+        <Text variant="headlineMedium">Events</Text>
+      </TouchableRipple>
       <FlatList
         style={styles.list}
         data={events}
@@ -23,7 +38,14 @@ export default function EventScreen({events, createEvent}: EventScreenProps) {
             <TouchableRipple
               style={styles.listItemOuter}
               onPress={() => console.log(item.eventId)}>
-              <Text>{item.eventName}</Text>
+              <>
+                <Text variant="labelLarge">{item.eventName}</Text>
+                <Text
+                  variant="bodySmall"
+                  style={{color: theme.colors.secondary}}>
+                  {item.eventId}
+                </Text>
+              </>
             </TouchableRipple>
           </Surface>
         )}
