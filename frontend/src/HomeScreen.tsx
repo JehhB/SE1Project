@@ -1,17 +1,37 @@
 import React, {useState} from 'react';
-import {TextInput, Button} from 'react-native-paper';
+import {
+  TextInput,
+  Button,
+  Portal,
+  Dialog,
+  Text,
+  Snackbar,
+} from 'react-native-paper';
 import {View, StyleSheet, ScrollView} from 'react-native';
 
 export type HomeScreenProps = {
   gotoEventCreation: () => void;
-  joinEvent: (eventId: string) => void;
+  joinEvent: (eventId: string, name: string) => void;
+  name: string | null;
+  errorVisibility: boolean;
+  dismissError: () => void;
 };
 
 export default function HomeScreen({
   gotoEventCreation,
   joinEvent,
+  name,
+  errorVisibility,
+  dismissError,
 }: HomeScreenProps) {
-  const [text, setText] = useState('');
+  const [eventId, setEventId] = useState('');
+  const [regName, setRegName] = useState(name);
+  const [visible, setVisibility] = useState(false);
+
+  function handleJoinEvent() {
+    setRegName(name);
+    setVisibility(true);
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -19,16 +39,17 @@ export default function HomeScreen({
         <View style={styles.inputContainer}>
           <TextInput
             label="Enter Event Code"
-            value={text}
-            onChangeText={inputText => setText(inputText)}
+            value={eventId}
+            onChangeText={text => setEventId(text)}
             style={styles.textInput}
             mode="outlined"
           />
         </View>
         <Button
           mode="contained"
-          onPress={() => joinEvent(text)}
+          onPress={handleJoinEvent}
           style={styles.button}
+          disabled={eventId.length < 1}
           labelStyle={styles.buttonLabel}>
           JOIN NOW
         </Button>
@@ -42,6 +63,35 @@ export default function HomeScreen({
           Create event
         </Button>
       </View>
+      <Portal>
+        <Dialog visible={visible} onDismiss={() => setVisibility(false)}>
+          <Dialog.Title>Enter name for event</Dialog.Title>
+          <Dialog.Content>
+            <TextInput
+              mode="outlined"
+              label="Name"
+              value={regName ?? ''}
+              onChangeText={setRegName}
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button
+              disabled={(regName ?? '').length < 1}
+              onPress={() => {
+                joinEvent(eventId, regName ?? '');
+                setVisibility(false);
+              }}>
+              Register
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+      <Snackbar
+        visible={errorVisibility}
+        onDismiss={dismissError}
+        action={{label: 'Dismiss', onPress: dismissError}}>
+        Error encountered
+      </Snackbar>
     </ScrollView>
   );
 }
