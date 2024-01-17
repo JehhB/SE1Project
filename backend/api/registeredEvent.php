@@ -35,9 +35,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             exit();
         }
 
-        $userId = $auth->getAuth();
-        if ($userId === false) error(500, "Unauthorized request");
-        $registeredEvents = $registeredEventRepository->getRegisteredEventsOfUser($_SESSION['userId']);
+        $authPayload = $auth->getAuthPayload();
+        if ($authPayload === null) error(401, "Unauthorized request");
+        $registeredEvents = $registeredEventRepository->getRegisteredEventByAuth($authPayload['userId'] ?? null, $authPayload['sessId']);
 
         header('Content-Type: application/json');
         echo json_encode($registeredEvents);
@@ -45,7 +45,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         break;
     case 'POST':
         $authPayload = $auth->getAuthPayload();
-        if ($authPayload === null) error(500, "Unauthorized reqest");
+        if ($authPayload === null) error(401, "Unauthorized reqest");
 
         if (!isset($_POST['eventId']) || !isset($_POST['registeredName'])) error();
         $event = $eventRepository->getEvent($_POST['eventId']);
@@ -56,6 +56,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
         header('Content-Type: application/json');
         echo json_encode(array('registeredEventId' => $registeredEventId));
+        exit();
         break;
 }
 

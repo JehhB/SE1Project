@@ -51,14 +51,17 @@ class Auth {
 
     public function createSession() {
         $auth = $this->getAuth();
+        $this->sendSession(uniqid("", true));
+    }
 
+    public function sendSession($sessionId) { 
         $payload = array(
-            'sessId' => uniqid("", true)
+            'sessId' => $sessionId,
         );
         $token = $this->jwtManager->createToken($payload);
 
         header('Content-Type: application/json');
-        echo json_encode(array('token' => $token));
+        echo json_encode(array('token' => $token, 'logout' => true));
     }
 
     /**

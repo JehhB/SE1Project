@@ -36,23 +36,22 @@ switch ($_SERVER["REQUEST_METHOD"]) {
         }
 
         $userId = $auth->getAuth();
-        if ($userId === false) error(500, "Unauthorized");
+        if ($userId === false) error(401, "Unauthorized");
 
         header('Content-Type: application/json');
         echo json_encode($eventRepository->getEventByUser($userId));
         exit();
         break;
     case 'POST':
-        if (!isset($_POST['eventName']) or
-            !isset($_POST['isStrict'])) break;
+        if (!isset($_POST['eventName'])) break;
 
         $userId = $auth->getAuth();
-        if ($userId === false) error(500, "Unauthorized");
+        if ($userId === false) error(401, "Unauthorized");
 
         $user = $userRepository->getUser($userId);
-        if (is_null($user)) error(500, "Unautorized");
+        if (is_null($user)) error(401, "Unautorized");
 
-        $event = new Event("", $_POST['eventName'], $user->userId, $_POST['isStrict']);
+        $event = new Event("", $_POST['eventName'], $user->userId, isset($_POST['isStrict']));
         $eventId = $eventRepository->addEvent($event);
 
         header('Content-Type: application/json');

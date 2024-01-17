@@ -10,7 +10,6 @@ use Model\Repository\RollcallRepositoryImpl;
 use Util\JWTManager;
 use Util\Auth;
 
-
 function error(int $errorCode = 400, string $errorMessage = "Invalid request") {
     http_response_code($errorCode);
     echo $errorMessage;
@@ -32,19 +31,22 @@ $auth = new Auth($jwtManager);
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'POST':
         $userId = $auth->getAuth();
-        if ($userId === false) error(500, "Unauthorized");
+        if ($userId === false) error(401, "Unauthorized");
 
         if (!isset($_POST['eventId']) or
             !isset($_POST['location']) or
             !isset($_POST['timeStart']) or 
             !isset($_POST['timeEnd'])) error();
 
-        $event = $eventRepository->getEvent('eventId');
+
+        $event = $eventRepository->getEvent($_POST['eventId']);
         if ($event === null) error();
         if ($event->creatorId != $userId) error();
 
         $rollcall = new Rollcall("", $_POST['eventId'], $_POST['location'], $_POST['timeStart'], $_POST['timeEnd']);
         $rollcallId = $rollcallRepository->addRollcall($rollcall);
+        header('Content-Type: application/json');
+        echo json_encode(array('rollcallId' => $rollcallId));
         exit();
         break;
     case 'GET':

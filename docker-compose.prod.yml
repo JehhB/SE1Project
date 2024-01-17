@@ -9,7 +9,7 @@ services:
     volumes:
       - ./backend/api:/var/www/html/api
     environment:
-      JWT_KEY: asdoijfafjwekj2kj
+      JWT_KEY: 7fDz1Ab+74c3uG9jyZH7SSudPm0VumyrBJ+qC2iSNdE=
       MODE_DEPLOY: development
       MYSQL_HOST: database
       MYSQL_DATABASE: database
@@ -18,7 +18,7 @@ services:
     command: ["apache2-foreground"]
 
   database:
-    image: mysql:8.2
+    build: database
     restart: always
     ports:
       - "3306:3306"
@@ -37,7 +37,7 @@ services:
     depends_on:
       - database
     ports:
-      - "8081:80"
+      - "8881:80"
     environment:
       PMA_HOST: database
       PMA_PORT: 3306
