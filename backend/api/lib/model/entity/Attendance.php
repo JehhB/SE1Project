@@ -29,5 +29,18 @@ class Attendance {
      */
     public static function respond(?Attendance $attendance) {
         // TODO: pagawa
+        if ($attendance === null) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Event not found']);
+        } else {
+            http_response_code(200);
+            echo json_encode([
+                'attendanceId' => $attendance->attendanceId,
+                'registeredEventId' => $attendance->registeredEventId,
+                'rollcallId' => $attendance->rollcallId,
+                'timestamp' => $attendance->timestamp,
+               
+            ]);
+        }
     }
 }
