@@ -1,13 +1,20 @@
 import React, {useState} from 'react';
-import {TextInput, Button, useTheme} from 'react-native-paper';
+import {TextInput, Button, useTheme, Snackbar} from 'react-native-paper';
 import {Text, View, StyleSheet, ScrollView, Image} from 'react-native';
 
 export type LogInPageProp = {
   gotoSigninPage: () => void;
   loginUser: (email: string, password: string) => void;
+  errorVisible: boolean;
+  dismissError: () => void;
 };
 
-export default function LogInPage({gotoSigninPage, loginUser}: LogInPageProp) {
+export default function LogInPage({
+  gotoSigninPage,
+  loginUser,
+  errorVisible,
+  dismissError,
+}: LogInPageProp) {
   const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -94,6 +101,12 @@ export default function LogInPage({gotoSigninPage, loginUser}: LogInPageProp) {
           Sign Up
         </Button>
       </View>
+      <Snackbar
+        visible={errorVisible}
+        onDismiss={dismissError}
+        action={{label: 'Dismiss', onPress: dismissError}}>
+        Invalid credentials
+      </Snackbar>
     </ScrollView>
   );
 }

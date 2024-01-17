@@ -13,6 +13,7 @@ import {persistor, store} from './src/store/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
 import HomeContainer from './src/HomeContainer';
+import ProfileContainer from './src/ProfileContainer';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -50,7 +51,7 @@ const IndexScreen = () => {
       />
       <Tab.Screen
         name="profile"
-        component={ProfileScreen}
+        component={ProfileContainer}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({focused, color}) => (

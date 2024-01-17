@@ -1,26 +1,24 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 export type SessionState = {
-  sessionId: string | null;
-  userId: string | null;
+  token: string | null;
 };
 
 export const sessionSlice = createSlice({
   name: 'session',
   initialState: {
-    sessionId: null,
-    userId: null,
+    token: null,
   } as SessionState,
   reducers: {
-    changeSession: (state, action) => {
-      state.sessionId = action.payload;
+    changeToken: (state, action) => {
+      state.token = action.payload;
     },
   },
 });
 
-export const {changeSession} = sessionSlice.actions;
+export const {changeToken} = sessionSlice.actions;
 
-export const selectSession = (state: {session: SessionState}) =>
-  state.session.sessionId;
+export const selectToken = (state: {session: SessionState}) =>
+  state.session.token;
 
 export default sessionSlice.reducer;

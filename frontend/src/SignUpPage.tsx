@@ -1,15 +1,21 @@
 import React, {useState} from 'react';
-import {TextInput, Button, useTheme} from 'react-native-paper';
+import {TextInput, Button, useTheme, Snackbar} from 'react-native-paper';
 import {Text, View, StyleSheet, ScrollView, Image} from 'react-native';
 
 export type SingupPageProps = {
   gotoLoginPage: () => void;
   singupUser: (name: string, email: string, password: string) => void;
+  errorVisible: boolean;
+  closeError: () => void;
+  errorMessage: string;
 };
 
 export default function SignUpPage({
   singupUser,
   gotoLoginPage,
+  errorVisible,
+  closeError,
+  errorMessage,
 }: SingupPageProps) {
   const theme = useTheme();
 
@@ -120,6 +126,12 @@ export default function SignUpPage({
           </Button>
         </View>
       </View>
+      <Snackbar
+        visible={errorVisible}
+        onDismiss={closeError}
+        action={{label: 'Dismiss', onPress: closeError}}>
+        {errorMessage}
+      </Snackbar>
     </ScrollView>
   );
 }

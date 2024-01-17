@@ -2,7 +2,11 @@ import React, {useState} from 'react';
 import {TextInput, Button} from 'react-native-paper';
 import {View, StyleSheet, ScrollView} from 'react-native';
 
-export default function HomeScreen() {
+export type HomeScreenProps = {
+  gotoEventCreation: () => void;
+};
+
+export default function HomeScreen({gotoEventCreation}: HomeScreenProps) {
   const [text, setText] = useState('');
 
   return (
@@ -19,17 +23,19 @@ export default function HomeScreen() {
         </View>
         <Button
           mode="contained"
-          onPress={() => console.log('Pressed')}
+          onPress={gotoEventCreation}
           style={styles.button}
           labelStyle={styles.buttonLabel}>
           JOIN NOW
         </Button>
       </View>
-      <View >
-        <Button mode="text" onPress={() => console.log('Pressed')}
-        style={styles.button2}
-        labelStyle={styles.buttonLabel2}>
-        Create event?
+      <View>
+        <Button
+          mode="text"
+          onPress={() => console.log('Pressed')}
+          style={styles.button2}
+          labelStyle={styles.buttonLabel2}>
+          Create event?
         </Button>
       </View>
     </ScrollView>
@@ -53,7 +59,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginBottom: 7,
   },
-  
+
   textInput: {
     fontSize: 20,
     borderTopRightRadius: 15,
