@@ -3,7 +3,8 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { PaperProvider } from "react-native-paper";
+import { PaperProvider, useTheme } from "react-native-paper";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -33,13 +34,19 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <PaperProvider>
+      <RootLayoutNav />
+    </PaperProvider>
+  );
 }
 
 function RootLayoutNav() {
+  const theme = useTheme();
+
   return (
-    <PaperProvider>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <Stack screenOptions={{ headerShown: false }} />
-    </PaperProvider>
+    </SafeAreaView>
   );
 }
