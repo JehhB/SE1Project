@@ -1,18 +1,18 @@
 import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {changeToken, selectToken} from '../slice/sessionSlice';
-import axios from 'axios';
+import axiosClient from './axiosClient';
 
 export function useSession() {
   const token = useSelector(selectToken);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (token !== null) return;
+    if (token != null) return;
 
     const intervalId = setInterval(() => {
       if (token) clearInterval(intervalId);
-      axios
+      axiosClient
         .get('/api/session.php')
         .then(response => {
           console.log(response.data);

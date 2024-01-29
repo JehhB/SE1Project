@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import EventCreateScreen from './EventCreateScreen';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectToken} from './slice/sessionSlice';
-import axios from 'axios';
 import {format} from 'date-fns';
 import {clearEventsCache} from './slice/eventsCacheSlice';
+import axiosClient from './lib/axiosClient';
 
 export default function EventCreateContainer({navigation}: any) {
   const [errorVisible, setErrorVisibility] = useState(false);
@@ -30,13 +30,13 @@ export default function EventCreateContainer({navigation}: any) {
     } as any;
     if (isStrict) eventData['isStrict'] = '';
 
-    axios
+    axiosClient
       .post('/api/event.php', eventData, {headers})
       .then(respone => {
         console.log(respone.data);
         dispatch(clearEventsCache());
 
-        axios
+        axiosClient
           .post(
             '/api/rollcall.php',
             {

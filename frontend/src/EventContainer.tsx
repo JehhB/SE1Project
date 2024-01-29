@@ -5,7 +5,7 @@ import {selectToken} from './slice/sessionSlice';
 import {decodeJWT} from './lib/jwt';
 import EventScreen from './EventScreen';
 import {selectEvents, setEventCache} from './slice/eventsCacheSlice';
-import axios from 'axios';
+import axiosClient from './lib/axiosClient';
 
 export default function EventContainer({navigation}: any) {
   const token = useSelector(selectToken);
@@ -22,7 +22,7 @@ export default function EventContainer({navigation}: any) {
 
   function refetchEvents() {
     if (!isAuth) return;
-    axios
+    axiosClient
       .get('/api/event.php', {headers})
       .then(response => {
         console.log(response.data);
@@ -44,6 +44,7 @@ export default function EventContainer({navigation}: any) {
       refetchEvent={refetchEvents}
       events={eventsCache}
       createEvent={() => navigation.navigate('eventCreate')}
+      gotoEvent={eventId => navigation.navigate('eventDetail', {eventId})}
     />
   ) : (
     <EventLogInToCreate

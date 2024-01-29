@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosClient from './axiosClient';
 import {
   changeUserId,
   changeUserName,
@@ -23,7 +23,7 @@ export default function useUserCache() {
   useEffect(() => {
     if (auth == null || auth.userId == null || userId === auth.userId) return;
     const interval = setInterval(() => {
-      axios
+      axiosClient
         .get(`/api/user.php?userId=${auth.userId}`)
         .then(response => {
           console.log(response.data);

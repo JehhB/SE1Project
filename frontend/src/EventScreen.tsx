@@ -16,12 +16,14 @@ export type EventScreenProps = {
   events: {eventId: string; eventName: string}[];
   createEvent: () => void;
   refetchEvent: () => void;
+  gotoEvent: (eventId: string) => void;
 };
 
 export default function EventScreen({
   events,
   createEvent,
   refetchEvent,
+  gotoEvent,
 }: EventScreenProps) {
   const theme = useTheme();
 
@@ -37,7 +39,7 @@ export default function EventScreen({
           <Surface mode="flat" style={styles.listItem}>
             <TouchableRipple
               style={styles.listItemOuter}
-              onPress={() => console.log(item.eventId)}>
+              onPress={() => gotoEvent(item.eventId)}>
               <>
                 <Text variant="labelLarge">{item.eventName}</Text>
                 <Text

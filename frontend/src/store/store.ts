@@ -3,6 +3,7 @@ import {Tuple, configureStore} from '@reduxjs/toolkit';
 import sessionReducer from '../slice/sessionSlice';
 import userCacheReducer from '../slice/userCacheSlice';
 import eventsCacheReducer from '../slice/eventsCacheSlice';
+import registrationCacheReducer from '../slice/registrationCacheSlice';
 import {persistStore, persistReducer} from 'redux-persist';
 import {thunk} from 'redux-thunk';
 
@@ -30,11 +31,20 @@ export const persistEventsCacheReducer = persistReducer(
   eventsCacheReducer,
 );
 
+export const persistRegistrationCacheReducer = persistReducer(
+  {
+    key: 'registrationCache',
+    storage: AsyncStorage,
+  },
+  registrationCacheReducer,
+);
+
 export const store = configureStore({
   reducer: {
     session: persistSessionReducer,
     userCache: persistUserCacheReducer,
     eventsCache: persistEventsCacheReducer,
+    registrationCache: persistRegistrationCacheReducer,
   },
   middleware: () => new Tuple(thunk),
 });

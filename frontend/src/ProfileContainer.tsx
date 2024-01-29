@@ -3,14 +3,14 @@ import ProfileScreen from './ProfileScreen';
 import {useDispatch, useSelector} from 'react-redux';
 import {changeToken} from './slice/sessionSlice';
 import {changeUserId, changeUserName, selectName} from './slice/userCacheSlice';
-import axios from 'axios';
+import axiosClient from './lib/axiosClient';
 
 export default function ProfileContainer({navigation}: any) {
   const name = useSelector(selectName);
   const dispatch = useDispatch();
 
   function logout() {
-    axios
+    axiosClient
       .get('/api/session.php?logout=')
       .then(response => {
         console.log(response.data);

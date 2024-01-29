@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import SignUpPage from './SignUpPage';
 import {useDispatch, useSelector} from 'react-redux';
 import {changeToken, selectToken} from './slice/sessionSlice';
-import axios from 'axios';
+import axiosClient from './lib/axiosClient';
 
 export default function SignUpContainer({navigation}: any) {
   const [errorVisible, setErrorVisible] = useState(false);
@@ -22,7 +22,7 @@ export default function SignUpContainer({navigation}: any) {
     } as any;
     if (token !== null) headers['Authorization'] = `Bearer ${token}`;
 
-    axios
+    axiosClient
       .post(
         '/api/user.php',
         {

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import LogInPage from './LogInPage';
 import {useDispatch, useSelector} from 'react-redux';
 import {changeToken, selectToken} from './slice/sessionSlice';
-import axios from 'axios';
+import axiosClient from './lib/axiosClient';
 
 export default function LogInContainer({navigation}: any) {
   const [errorVisible, setErrorVisible] = useState(false);
@@ -15,7 +15,7 @@ export default function LogInContainer({navigation}: any) {
     } as any;
     if (token !== null) headers['Authorization'] = `Bearer ${token}`;
 
-    axios
+    axiosClient
       .post(
         '/api/user.php',
         {
@@ -28,6 +28,7 @@ export default function LogInContainer({navigation}: any) {
         },
       )
       .then(response => {
+        console.log(response.data);
         dispatch(changeToken(response.data.token));
         navigation.navigate('index');
       })
