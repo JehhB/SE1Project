@@ -1,19 +1,19 @@
 import React from "react";
-import { FlatList, View } from "react-native";
-import { Button, IconButton, List, Surface, Text } from "react-native-paper";
+import { View } from "react-native";
+import { Button, Text } from "react-native-paper";
 import PropType from "prop-types";
 
 export type NoUserProfileProp = {
-  handleLogin: () => void;
+  gotoLogin: () => void;
 };
 
-function NoUserProfile({ handleLogin }: NoUserProfileProp) {
+function NoUserProfile({ gotoLogin }: NoUserProfileProp) {
   const data: any[] = [null, null];
 
   return (
-    <View className="justify-between flex-row items-center mb-4">
+    <View className="mb-4 flex-row items-center justify-between">
       <Text variant="headlineMedium">Hello!</Text>
-      <Button mode="contained" onPress={handleLogin}>
+      <Button mode="contained" onPress={gotoLogin}>
         Log In
       </Button>
     </View>

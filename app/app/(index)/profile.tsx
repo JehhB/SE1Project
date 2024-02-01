@@ -7,7 +7,7 @@ import { router } from "expo-router";
 function Profile() {
   return (
     <View className="flex-1 p-4">
-      <NoUserProfile handleLogin={() => router.navigate("/login")} />
+      <NoUserProfile gotoLogin={() => router.navigate("/login")} />
       <AttendanceList attendances={[null, null]} handleSync={() => {}} />
     </View>
   );

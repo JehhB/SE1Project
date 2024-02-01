@@ -16,6 +16,6 @@ export const Tabs = withLayoutContext<
 >(Navigator, (screens) =>
   screens.filter(
     (screen) =>
-      typeof screen.options === "function" || screen.options?.href !== null
-  )
+      typeof screen.options === "function" || screen.options?.href !== null,
+  ),
 );

@@ -4,7 +4,7 @@ import { Text } from "react-native-paper";
 
 function home() {
   return (
-    <View className="items-center justify-center flex-1">
+    <View className="flex-1 items-center justify-center">
       <Text>Home</Text>
     </View>
   );

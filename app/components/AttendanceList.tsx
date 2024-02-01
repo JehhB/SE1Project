@@ -28,10 +28,10 @@ function AttendanceList({
 
   return (
     <>
-      <View className="justify-between flex-row items-center mb-2">
+      <View className="mb-2 flex-row items-center justify-between">
         <Text variant="titleLarge">Past attendance</Text>
         <TouchableRipple
-          className="w-12 h-12 items-center justify-center"
+          className="h-12 w-12 items-center justify-center"
           disabled={!isSynced && !isSyncing}
           onPress={handleSync}
         >
@@ -50,12 +50,12 @@ function AttendanceList({
         <FlatList
           data={attendances}
           renderItem={(item) => (
-            <Surface className="rounded mb-2">
+            <Surface className="mb-2 rounded">
               <List.Item
                 title={
                   <>
                     <Text className="text-sm">Event name&nbsp;</Text>
-                    <Text className="italic text-sm">(00:00-23:59)</Text>
+                    <Text className="text-sm italic">(00:00-23:59)</Text>
                   </>
                 }
                 description="Clocked in at 00:01"
