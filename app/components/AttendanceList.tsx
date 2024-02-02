@@ -31,7 +31,7 @@ function AttendanceList({
       <View className="mb-2 flex-row items-center justify-between">
         <Text variant="titleLarge">Past attendance</Text>
         <TouchableRipple
-          className="h-12 w-12 items-center justify-center"
+          className="h-12 w-12 items-center justify-center rounded-full"
           disabled={!isSynced && !isSyncing}
           onPress={handleSync}
         >

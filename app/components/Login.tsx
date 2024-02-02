@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { View } from "react-native";
-import { Text, TextInput, Button, Snackbar } from "react-native-paper";
+import useSnackbar from "@/lib/hooks/useSnackbar";
+import { validate } from "email-validator";
+import React, { useRef, useState } from "react";
+import { View, TextInput as _TextInput } from "react-native";
+import { Text, TextInput, Button } from "react-native-paper";
 
 export type LoginProps = {
   handleLogin: (email: string, password: string) => void;
@@ -11,9 +13,24 @@ function Login({ handleLogin, gotoSignin }: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [error, setError] = useState<null | string>(null);
-  function dismissError() {
-    setError(null);
+  const emailInput = useRef<_TextInput>(null);
+  const passwordInput = useRef<_TextInput>(null);
+
+  const [snackbar, alert] = useSnackbar();
+
+  function _handleLogin() {
+    if (email.length == 0) {
+      alert("You must enter your email address");
+      emailInput.current?.focus();
+    } else if (password.length == 0) {
+      alert("You must enter your password");
+      passwordInput.current?.focus();
+    } else if (!validate(email)) {
+      alert("Invalid email address");
+      emailInput.current?.focus();
+    } else {
+      handleLogin(email, password);
+    }
   }
 
   return (
@@ -24,6 +41,13 @@ function Login({ handleLogin, gotoSignin }: LoginProps) {
         </Text>
         <View className="mb-6 gap-2">
           <TextInput
+            ref={emailInput}
+            onSubmitEditing={() => {
+              passwordInput.current?.focus();
+              console.log("test");
+            }}
+            returnKeyType="next"
+            blurOnSubmit={false}
             label="Email"
             value={email}
             keyboardType="email-address"
@@ -31,6 +55,9 @@ function Login({ handleLogin, gotoSignin }: LoginProps) {
             mode="outlined"
           />
           <TextInput
+            ref={passwordInput}
+            onSubmitEditing={_handleLogin}
+            returnKeyType="go"
             label="Password"
             secureTextEntry
             value={password}
@@ -39,7 +66,7 @@ function Login({ handleLogin, gotoSignin }: LoginProps) {
           />
         </View>
         <View className="gap-2">
-          <Button mode="contained" onPress={() => handleLogin(email, password)}>
+          <Button mode="contained" onPress={_handleLogin}>
             Log In
           </Button>
           <Button mode="outlined" onPress={gotoSignin}>
@@ -48,16 +75,7 @@ function Login({ handleLogin, gotoSignin }: LoginProps) {
         </View>
       </View>
 
-      <Snackbar
-        visible={error != null}
-        onDismiss={dismissError}
-        action={{
-          label: "Dismiss",
-          onPress: dismissError,
-        }}
-      >
-        {error}
-      </Snackbar>
+      {snackbar}
     </>
   );
 }
