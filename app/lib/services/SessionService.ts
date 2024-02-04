@@ -11,8 +11,14 @@ export class SessionService implements ISessionService {
   signin(email: string, password: string): Promise<AuthResponse> {
     return this.supabase.auth.signUp({ email, password });
   }
+
   login(email: string, password: string): Promise<AuthTokenResponsePassword> {
     return this.supabase.auth.signInWithPassword({ email, password });
+  }
+
+  async logout(): Promise<void> {
+    const resp = await this.supabase.auth.signOut();
+    if (resp.error) throw resp.error;
   }
 
   createSession(): Promise<SessionResponse> {

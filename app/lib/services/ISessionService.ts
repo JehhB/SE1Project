@@ -7,6 +7,7 @@ export type SessionResponse =
 export interface ISessionService {
   signin(email: string, password: string): Promise<AuthResponse>;
   login(email: string, password: string): Promise<AuthTokenResponsePassword>;
+  logout(): Promise<void>;
   createSession(): Promise<SessionResponse>;
 }
 

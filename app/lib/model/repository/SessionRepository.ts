@@ -1,41 +1,53 @@
 import ISessionDao from "@/lib/model/dao/ISessionDao";
 import ISessionRepository from "@/lib/model/repository/ISessionRepository";
 import { ISessionService } from "@/lib/services/ISessionService";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { runInAction } from "mobx";
 
 export class SessionRepository implements ISessionRepository {
   constructor(
     protected sessionDao: ISessionDao,
     protected sessionService: ISessionService,
+    protected supabase: SupabaseClient,
   ) {}
 
+  registerListeners() {
+    const subscription = this.supabase.auth.onAuthStateChange(
+      (event, session) => {
+        runInAction(() => {
+          if (event == "SIGNED_IN") {
+            this.sessionDao.user_id = session?.user.id ?? null;
+          } else if (event == "SIGNED_OUT") {
+            this.sessionDao.user_id = null;
+          }
+        });
+      },
+    );
+
+    return subscription.data.subscription.unsubscribe;
+  }
+
   getSessionToken(): string | null {
-    if (this.sessionDao.access_token == null) {
+    if (this.sessionDao.session_token == null) {
       this.sessionService.createSession().then((resp) => {
         if (resp.data == null) throw new Error(resp.error);
-        this.sessionDao.access_token = resp.data.session_token;
+        runInAction(() => {
+          this.sessionDao.session_token = resp.data.session_token;
+        });
       });
     }
 
-    return this.sessionDao.access_token;
+    return this.sessionDao.session_token;
   }
 
-  signin(email: string, password: string): void {
-    this.sessionService
-      .signin(email, password)
-      .then((resp) => {
-        if (resp.error !== null) throw resp.error;
-      })
-      .catch((error) => console.error(error));
+  async signin(email: string, password: string): Promise<void> {
+    const resp = await this.sessionService.signin(email, password);
+    if (resp.error) throw resp.error;
   }
 
-  login(email: string, password: string): void {
-    this.sessionService
-      .login(email, password)
-      .then((resp) => {
-        if (resp.data == null) throw resp.error;
-        this.sessionDao.access_token = resp.data.session?.access_token ?? null;
-      })
-      .catch((error) => console.error(error));
+  async login(email: string, password: string): Promise<void> {
+    const resp = await this.sessionService.login(email, password);
+    if (resp.error) throw resp.error;
   }
 }
 

@@ -1,19 +1,19 @@
-import { makePersistable } from "mobx-persist-store";
+import { StorageController, makePersistable } from "mobx-persist-store";
 import ISessionDao from "./ISessionDao";
-import { observable } from "mobx";
-import { storage } from "../source/storage";
+import { makeObservable, observable } from "mobx";
 
 export class SessionDao implements ISessionDao {
   @observable public session_token: string | null = null;
-  @observable public access_token: string | null = null;
+  @observable public user_id: string | null = null;
+
+  constructor(public storage: StorageController) {
+    makeObservable(this);
+    makePersistable(this, {
+      name: "SessionDao",
+      storage,
+      properties: ["session_token", "user_id"],
+    });
+  }
 }
 
-export function createSessionDao() {
-  const dao = new SessionDao();
-  makePersistable(dao, {
-    name: "SessionDao",
-    storage,
-    properties: ["session_token", "session_token"],
-  });
-  return dao;
-}
+export default SessionDao;
