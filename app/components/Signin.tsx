@@ -5,7 +5,7 @@ import { TextInput as _TextInput, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 
 export type SigninProps = {
-  handleSignin: (email: string, password: string) => void;
+  handleSignin: (email: string, username: string, password: string) => void;
   gotoLogin: () => void;
 };
 
@@ -13,10 +13,12 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUsername] = useState("");
 
   const [snackbar, alert] = useSnackbar();
 
   const emailInput = useRef<_TextInput>(null);
+  const nameInput = useRef<_TextInput>(null);
   const passwordInput = useRef<_TextInput>(null);
   const confirmPasswordInput = useRef<_TextInput>(null);
 
@@ -24,6 +26,9 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
     if (email.length == 0) {
       alert("You must enter your email address");
       emailInput.current?.focus();
+    } else if (username.length == 0) {
+      alert("You must enter a username");
+      nameInput.current?.focus();
     } else if (password.length == 0) {
       alert("You must enter your password");
       passwordInput.current?.focus();
@@ -43,7 +48,7 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
       alert("Password must be at least 8 characters long");
       passwordInput.current?.focus();
     } else {
-      handleSignin(email, password);
+      handleSignin(email, username, password);
     }
   }
 
@@ -57,11 +62,20 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
           <TextInput
             ref={emailInput}
             returnKeyType="next"
-            onSubmitEditing={() => passwordInput.current?.focus()}
+            onSubmitEditing={() => nameInput.current?.focus()}
             value={email}
             onChangeText={setEmail}
             label="Email"
             keyboardType="email-address"
+            mode="outlined"
+          />
+          <TextInput
+            ref={nameInput}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordInput.current?.focus()}
+            value={username}
+            onChangeText={setUsername}
+            label="Name"
             mode="outlined"
           />
           <TextInput

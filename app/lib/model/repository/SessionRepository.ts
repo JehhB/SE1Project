@@ -8,21 +8,18 @@ export class SessionRepository implements ISessionRepository {
   constructor(
     protected sessionDao: ISessionDao,
     protected sessionService: ISessionService,
-    protected supabase: SupabaseClient,
   ) {}
 
-  registerListeners() {
-    const subscription = this.supabase.auth.onAuthStateChange(
-      (event, session) => {
-        runInAction(() => {
-          if (event == "SIGNED_IN") {
-            this.sessionDao.user_id = session?.user.id ?? null;
-          } else if (event == "SIGNED_OUT") {
-            this.sessionDao.user_id = null;
-          }
-        });
-      },
-    );
+  registerListeners(supabase: SupabaseClient) {
+    const subscription = supabase.auth.onAuthStateChange((event, session) => {
+      runInAction(() => {
+        if (event == "SIGNED_IN") {
+          this.sessionDao.user_id = session?.user.id ?? null;
+        } else if (event == "SIGNED_OUT") {
+          this.sessionDao.user_id = null;
+        }
+      });
+    });
 
     return subscription.data.subscription.unsubscribe;
   }
@@ -40,6 +37,21 @@ export class SessionRepository implements ISessionRepository {
     return this.sessionDao.session_token;
   }
 
+  getUserId(): string | null {
+    this.sessionService
+      .getUserId()
+      .then((userId) => {
+        runInAction(() => {
+          this.sessionDao.user_id = userId;
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    return this.sessionDao.user_id;
+  }
+
   async signin(email: string, password: string): Promise<void> {
     const resp = await this.sessionService.signin(email, password);
     if (resp.error) throw resp.error;
@@ -48,6 +60,14 @@ export class SessionRepository implements ISessionRepository {
   async login(email: string, password: string): Promise<void> {
     const resp = await this.sessionService.login(email, password);
     if (resp.error) throw resp.error;
+  }
+
+  logout(): Promise<void> {
+    return this.sessionService.logout().then(() => {
+      runInAction(() => {
+        this.sessionDao.user_id = null;
+      });
+    });
   }
 }
 

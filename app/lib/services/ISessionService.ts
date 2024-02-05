@@ -9,6 +9,7 @@ export interface ISessionService {
   login(email: string, password: string): Promise<AuthTokenResponsePassword>;
   logout(): Promise<void>;
   createSession(): Promise<SessionResponse>;
+  getUserId(): Promise<string>;
 }
 
 export default ISessionService;

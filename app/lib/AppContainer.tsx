@@ -4,37 +4,24 @@ import supabase from "./model/source/supabase";
 import { SessionService } from "./services/SessionService";
 import SessionDao from "./model/dao/SessionDao";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StorageController } from "mobx-persist-store";
-
-class Storage implements StorageController {
-  async getItem<T>(key: string): Promise<string | T | null> {
-    const result = await AsyncStorage.getItem(key);
-    console.log(`Getting ${key} with value ${result}`);
-    return result;
-  }
-  removeItem(key: string): Promise<void> {
-    console.log(`Removing ${key}`);
-    return AsyncStorage.removeItem(key);
-  }
-
-  async setItem(key: string, value: any): Promise<void> {
-    console.log(`Setting ${key} with value ${value}`);
-    return AsyncStorage.setItem(key, value);
-  }
-}
+import { UserDao } from "./model/dao/UserDao";
+import { UserService } from "./services/UserService";
+import { UserRepository } from "./model/repository/UserRepository";
 
 export function createAppContainer() {
-  const sessionDao = new SessionDao(new Storage());
+  const sessionDao = SessionDao.createSessionDao(AsyncStorage);
+  const userDao = UserDao.createUserDao(AsyncStorage);
+
   const sessionService = new SessionService(supabase);
-  const sessionRepository = new SessionRepository(
-    sessionDao,
-    sessionService,
-    supabase,
-  );
+  const userService = new UserService(supabase);
+
+  const sessionRepository = new SessionRepository(sessionDao, sessionService);
+  const userRepository = new UserRepository(userDao, userService);
 
   return {
     supabase,
     sessionRepository,
+    userRepository,
   };
 }
 
@@ -43,7 +30,8 @@ export const ContainerContext = createContext(appContainer);
 
 export function AppContainer({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    const unsubscribe = appContainer.sessionRepository.registerListeners();
+    const unsubscribe =
+      appContainer.sessionRepository.registerListeners(supabase);
     return () => {
       unsubscribe();
     };

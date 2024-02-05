@@ -5,22 +5,28 @@ import { router } from "expo-router";
 import React from "react";
 
 function signin() {
-  const { sessionRepository } = useAppContainer();
+  const { sessionRepository, userRepository } = useAppContainer();
   const [snackbar, alert] = useSnackbar();
+
+  async function handleSignin(
+    email: string,
+    username: string,
+    password: string,
+  ) {
+    try {
+      await sessionRepository.signin(email, password);
+      await sessionRepository.login(email, password);
+      await userRepository.setUserName(username);
+      router.replace("/home");
+    } catch (error: any) {
+      alert(error.message);
+    }
+  }
 
   return (
     <>
       <Signin
-        handleSignin={(email, password) => {
-          sessionRepository
-            .signin(email, password)
-            .then(() => {
-              router.replace("/login");
-            })
-            .catch((error) => {
-              alert(error.message);
-            });
-        }}
+        handleSignin={handleSignin}
         gotoLogin={() => router.navigate("/login")}
       />
       {snackbar}

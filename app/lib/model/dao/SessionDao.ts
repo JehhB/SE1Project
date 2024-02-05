@@ -6,13 +6,18 @@ export class SessionDao implements ISessionDao {
   @observable public session_token: string | null = null;
   @observable public user_id: string | null = null;
 
-  constructor(public storage: StorageController) {
+  constructor() {
     makeObservable(this);
-    makePersistable(this, {
+  }
+
+  public static createSessionDao(storage: StorageController) {
+    const dao = new SessionDao();
+    makePersistable(dao, {
       name: "SessionDao",
       storage,
       properties: ["session_token", "user_id"],
     });
+    return dao;
   }
 }
 

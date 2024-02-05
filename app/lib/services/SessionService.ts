@@ -4,9 +4,10 @@ import {
   SupabaseClient,
 } from "@supabase/supabase-js";
 import ISessionService, { SessionResponse } from "./ISessionService";
+import { Database } from "../model/source/supabase.type";
 
 export class SessionService implements ISessionService {
-  constructor(private supabase: SupabaseClient) {}
+  constructor(private supabase: SupabaseClient<Database>) {}
 
   signin(email: string, password: string): Promise<AuthResponse> {
     return this.supabase.auth.signUp({ email, password });
@@ -23,5 +24,11 @@ export class SessionService implements ISessionService {
 
   createSession(): Promise<SessionResponse> {
     throw new Error("Method not implemented.");
+  }
+
+  async getUserId(): Promise<string> {
+    const resp = await this.supabase.auth.getUser();
+    if (resp.error) throw resp;
+    return resp.data.user.id;
   }
 }
