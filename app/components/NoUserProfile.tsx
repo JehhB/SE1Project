@@ -7,13 +7,13 @@ export type NoUserProfileProp = {
   gotoLogin: () => void;
 };
 
-function NoUserProfile({ gotoLogin }: NoUserProfileProp) {
+function NoUserProfile(props: NoUserProfileProp) {
   const data: any[] = [null, null];
 
   return (
     <View className="mb-4 flex-row items-center justify-between">
       <Text variant="headlineMedium">Hello!</Text>
-      <Button mode="contained" onPress={gotoLogin}>
+      <Button mode="contained" onPress={props.gotoLogin}>
         Log In
       </Button>
     </View>

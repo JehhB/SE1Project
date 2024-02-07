@@ -5,7 +5,7 @@ export type SessionResponse =
   | { data: null; error: string };
 
 export interface ISessionService {
-  signin(email: string, password: string): Promise<AuthResponse>;
+  signup(email: string, password: string): Promise<AuthResponse>;
   login(email: string, password: string): Promise<AuthTokenResponsePassword>;
   logout(): Promise<void>;
   createSession(): Promise<SessionResponse>;

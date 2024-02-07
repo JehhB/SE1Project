@@ -2,7 +2,6 @@ import React from "react";
 import { FlatList, View } from "react-native";
 import {
   ActivityIndicator,
-  Button,
   Icon,
   List,
   Surface,
@@ -18,12 +17,7 @@ export type AttendanceListProps = {
   handleSync: () => void;
 };
 
-function AttendanceList({
-  attendances,
-  isSynced = true,
-  isSyncing = false,
-  handleSync,
-}: AttendanceListProps) {
+function AttendanceList(props: AttendanceListProps) {
   const theme = useTheme();
 
   return (
@@ -32,23 +26,23 @@ function AttendanceList({
         <Text variant="titleLarge">Past attendance</Text>
         <TouchableRipple
           className="h-12 w-12 items-center justify-center rounded-full"
-          disabled={!isSynced && !isSyncing}
-          onPress={handleSync}
+          disabled={!props.isSynced && !props.isSyncing}
+          onPress={props.handleSync}
         >
-          {isSynced ? (
+          {props.isSynced ? (
             <Icon source="cloud-check-outline" size={24} />
-          ) : isSyncing ? (
+          ) : props.isSyncing ? (
             <ActivityIndicator size={24} />
           ) : (
             <Icon source="cloud-sync-outline" size={16} />
           )}
         </TouchableRipple>
       </View>
-      {attendances.length == 0 ? (
+      {props.attendances.length == 0 ? (
         <Text className="italic">No recorded attendance yet.</Text>
       ) : (
         <FlatList
-          data={attendances}
+          data={props.attendances}
           renderItem={(item) => (
             <Surface className="mb-2 rounded">
               <List.Item

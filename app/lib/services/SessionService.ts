@@ -9,7 +9,7 @@ import { Database } from "../model/source/supabase.type";
 export class SessionService implements ISessionService {
   constructor(private supabase: SupabaseClient<Database>) {}
 
-  signin(email: string, password: string): Promise<AuthResponse> {
+  signup(email: string, password: string): Promise<AuthResponse> {
     return this.supabase.auth.signUp({ email, password });
   }
 

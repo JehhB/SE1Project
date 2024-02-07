@@ -4,12 +4,12 @@ import { validate } from "email-validator";
 import { TextInput as _TextInput, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 
-export type SigninProps = {
-  handleSignin: (email: string, username: string, password: string) => void;
+export type SignupProps = {
+  handleSignup: (email: string, username: string, password: string) => void;
   gotoLogin: () => void;
 };
 
-function Signin({ handleSignin, gotoLogin }: SigninProps) {
+function Signup(props: SignupProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,7 +22,7 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
   const passwordInput = useRef<_TextInput>(null);
   const confirmPasswordInput = useRef<_TextInput>(null);
 
-  function _handleSignin() {
+  function _handleSignup() {
     if (email.length == 0) {
       alert("You must enter your email address");
       emailInput.current?.focus();
@@ -48,7 +48,7 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
       alert("Password must be at least 8 characters long");
       passwordInput.current?.focus();
     } else {
-      handleSignin(email, username, password);
+      props.handleSignup(email, username, password);
     }
   }
 
@@ -56,7 +56,7 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
     <>
       <View className="w-full max-w-2xl flex-1 justify-center self-center p-4">
         <Text variant="headlineSmall" className="mb-8 self-center">
-          Signin up!
+          Sign up!
         </Text>
         <View className="mb-6 gap-2">
           <TextInput
@@ -91,7 +91,7 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
           <TextInput
             ref={confirmPasswordInput}
             returnKeyType="go"
-            onSubmitEditing={_handleSignin}
+            onSubmitEditing={_handleSignup}
             label="Confirm password"
             secureTextEntry
             mode="outlined"
@@ -100,10 +100,10 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
           />
         </View>
         <View className="gap-2">
-          <Button mode="contained" onPress={_handleSignin}>
+          <Button mode="contained" onPress={_handleSignup}>
             Sign Up
           </Button>
-          <Button mode="text" onPress={gotoLogin}>
+          <Button mode="text" onPress={props.gotoLogin}>
             Already have an account?
           </Button>
         </View>
@@ -113,4 +113,4 @@ function Signin({ handleSignin, gotoLogin }: SigninProps) {
   );
 }
 
-export default Signin;
+export default Signup;

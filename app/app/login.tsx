@@ -22,7 +22,7 @@ function login() {
               alert(error.message);
             });
         }}
-        gotoSignin={() => router.navigate("/signin")}
+        gotoSignup={() => router.navigate("/signup")}
       />
       {snackbar}
     </>

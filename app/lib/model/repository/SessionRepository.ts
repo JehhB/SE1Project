@@ -52,8 +52,8 @@ export class SessionRepository implements ISessionRepository {
     return this.sessionDao.user_id;
   }
 
-  async signin(email: string, password: string): Promise<void> {
-    const resp = await this.sessionService.signin(email, password);
+  async signup(email: string, password: string): Promise<void> {
+    const resp = await this.sessionService.signup(email, password);
     if (resp.error) throw resp.error;
   }
 

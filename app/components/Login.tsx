@@ -6,10 +6,10 @@ import { Text, TextInput, Button } from "react-native-paper";
 
 export type LoginProps = {
   handleLogin: (email: string, password: string) => void;
-  gotoSignin: () => void;
+  gotoSignup: () => void;
 };
 
-function Login({ handleLogin, gotoSignin }: LoginProps) {
+function Login(props: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -29,7 +29,7 @@ function Login({ handleLogin, gotoSignin }: LoginProps) {
       alert("Invalid email address");
       emailInput.current?.focus();
     } else {
-      handleLogin(email, password);
+      props.handleLogin(email, password);
     }
   }
 
@@ -69,7 +69,7 @@ function Login({ handleLogin, gotoSignin }: LoginProps) {
           <Button mode="contained" onPress={_handleLogin}>
             Log In
           </Button>
-          <Button mode="outlined" onPress={gotoSignin}>
+          <Button mode="outlined" onPress={props.gotoSignup}>
             Sign Up
           </Button>
         </View>

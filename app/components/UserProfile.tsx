@@ -7,11 +7,11 @@ export type UserProfileProps = {
   username: string;
 };
 
-function UserProfile({ handleLogout, username }: UserProfileProps) {
+function UserProfile(props: UserProfileProps) {
   return (
     <View className="flex-col items-start">
-      <Text variant="headlineMedium">Hi {username}!</Text>
-      <Button onPress={handleLogout}>Logout</Button>
+      <Text variant="headlineMedium">Hi {props.username}!</Text>
+      <Button onPress={props.handleLogout}>Logout</Button>
     </View>
   );
 }
