@@ -1,9 +1,9 @@
+import EventsList from "@/components/EventsList";
 import LoginSignup from "@/components/LoginSignup";
 import { useAppContainer } from "@/lib/AppContainer";
 import { router } from "expo-router";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { Text } from "react-native-paper";
 
 const Events = observer(() => {
   const { sessionRepository } = useAppContainer();
@@ -18,7 +18,13 @@ const Events = observer(() => {
     );
   }
 
-  return <Text>Events</Text>;
+  return (
+    <EventsList
+      events={[]}
+      gotoEventCreation={() => {}}
+      gotoEventDetail={() => {}}
+    />
+  );
 });
 
 export default Events;
