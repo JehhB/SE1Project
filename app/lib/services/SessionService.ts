@@ -27,8 +27,10 @@ export class SessionService implements ISessionService {
   }
 
   async getUserId(): Promise<string> {
-    const resp = await this.supabase.auth.getUser();
+    const resp = await this.supabase.auth.getSession();
     if (resp.error) throw resp;
-    return resp.data.user.id;
+    if (resp.data.session === null) throw Error("Not authenticated");
+
+    return resp.data.session.user.id;
   }
 }

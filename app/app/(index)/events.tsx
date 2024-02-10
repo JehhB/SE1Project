@@ -6,8 +6,10 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 
 const Events = observer(() => {
-  const { sessionRepository } = useAppContainer();
+  const { sessionRepository, createdEventsRepository } = useAppContainer();
+
   const userId = sessionRepository.getUserId();
+  const createdEvents = createdEventsRepository.getCreatedEvents();
 
   if (userId == null) {
     return (
@@ -20,8 +22,11 @@ const Events = observer(() => {
 
   return (
     <EventsList
-      events={[]}
-      gotoEventCreation={() => {}}
+      events={createdEvents}
+      handleRefresh={() => {
+        createdEventsRepository.refetchEvents();
+      }}
+      gotoEventCreation={() => router.navigate("events/create")}
       gotoEventDetail={() => {}}
     />
   );
