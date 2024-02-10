@@ -7,7 +7,7 @@ import { PaperProvider, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import "./global.css";
-import { AppContainer } from "@/lib/AppContainer";
+import { AppContainer, useAppContainer } from "@/lib/AppContainer";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -39,26 +39,28 @@ export default function RootLayout() {
 
   return (
     <PaperProvider>
-      <RootLayoutNav />
+      <AppContainer>
+        <RootLayoutNav />
+      </AppContainer>
     </PaperProvider>
   );
 }
 
 function RootLayoutNav() {
   const theme = useTheme();
+  const { sessionRepository } = useAppContainer();
+  useEffect(() => {
+    sessionRepository.getSessionToken();
+  }, []);
 
   return (
-    <AppContainer>
-      <SafeAreaView
-        style={{ flex: 1, backgroundColor: theme.colors.background }}
-      >
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: theme.colors.background },
-          }}
-        />
-      </SafeAreaView>
-    </AppContainer>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: theme.colors.background },
+        }}
+      />
+    </SafeAreaView>
   );
 }

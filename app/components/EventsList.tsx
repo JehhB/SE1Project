@@ -1,14 +1,7 @@
 import { Loadable } from "@/lib/utils/Loadable";
 import React from "react";
 import { FlatList, View } from "react-native";
-import {
-  ActivityIndicator,
-  FAB,
-  List,
-  Surface,
-  Text,
-  TouchableRipple,
-} from "react-native-paper";
+import { FAB, List, Surface, Text, TouchableRipple } from "react-native-paper";
 
 export type EventsListProps = {
   events: Loadable<{ name: string; id: string }[]>;
@@ -24,6 +17,7 @@ function EventsList(props: EventsListProps) {
   return (
     <>
       <FlatList
+        className="p-4"
         refreshing={props.events.isLoading}
         onRefresh={props.handleRefresh}
         data={data}
@@ -40,20 +34,16 @@ function EventsList(props: EventsListProps) {
           )
         }
         renderItem={({ item }) => (
-          <TouchableRipple
-            className="rounded"
-            onPress={() => props.gotoEventDetail(item.id)}
-          >
-            <Surface className="mb-2 flex-1">
+          <Surface className="mb-2 flex-1 rounded">
+            <TouchableRipple onPress={() => props.gotoEventDetail(item.id)}>
               <List.Item
                 title={<Text className="text-sm">{item.name}</Text>}
                 description={<Text className="text-xs italic">{item.id}</Text>}
               />
-            </Surface>
-          </TouchableRipple>
+            </TouchableRipple>
+          </Surface>
         )}
         keyExtractor={(item) => item.id}
-        className="p-4"
       />
       <FAB
         icon="plus"

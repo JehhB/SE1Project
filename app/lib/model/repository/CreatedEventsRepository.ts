@@ -14,7 +14,6 @@ export class CreatedEventsRepository implements ICreatedEventsRepository {
   }
 
   refetchEvents(): void {
-    console.log(this);
     this.createdEventsService
       .getCreatedEvents()
       .then((events) => {

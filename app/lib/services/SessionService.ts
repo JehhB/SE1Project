@@ -3,8 +3,10 @@ import {
   AuthTokenResponsePassword,
   SupabaseClient,
 } from "@supabase/supabase-js";
-import ISessionService, { SessionResponse } from "./ISessionService";
+import ISessionService from "./ISessionService";
 import { Database } from "../model/source/supabase.type";
+import { Platform } from "react-native";
+import * as Device from "expo-device";
 
 export class SessionService implements ISessionService {
   constructor(private supabase: SupabaseClient<Database>) {}
@@ -22,8 +24,16 @@ export class SessionService implements ISessionService {
     if (resp.error) throw resp.error;
   }
 
-  createSession(): Promise<SessionResponse> {
-    throw new Error("Method not implemented.");
+  async createSession(): Promise<string> {
+    const resp = await this.supabase.functions.invoke<{
+      token: string;
+    }>("createSession", {
+      method: "POST",
+      body: { platform: Platform.OS, os: Device.osName },
+    });
+    if (resp.error) throw resp.error;
+
+    return resp.data!.token;
   }
 
   async getUserId(): Promise<string> {

@@ -3,6 +3,7 @@ import ISessionRepository from "@/lib/model/repository/ISessionRepository";
 import { ISessionService } from "@/lib/services/ISessionService";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { runInAction } from "mobx";
+import { isHydrated } from "mobx-persist-store";
 
 export class SessionRepository implements ISessionRepository {
   constructor(
@@ -25,13 +26,17 @@ export class SessionRepository implements ISessionRepository {
   }
 
   getSessionToken(): string | null {
-    if (this.sessionDao.session_token == null) {
-      this.sessionService.createSession().then((resp) => {
-        if (resp.data == null) throw new Error(resp.error);
-        runInAction(() => {
-          this.sessionDao.session_token = resp.data.session_token;
+    if (this.sessionDao.session_token == null && isHydrated(this.sessionDao)) {
+      this.sessionService
+        .createSession()
+        .then((resp) => {
+          runInAction(() => {
+            this.sessionDao.session_token = resp;
+          });
+        })
+        .catch((error) => {
+          console.error(error);
         });
-      });
     }
 
     return this.sessionDao.session_token;
@@ -63,11 +68,10 @@ export class SessionRepository implements ISessionRepository {
   }
 
   logout(): Promise<void> {
-    return this.sessionService.logout().then(() => {
-      runInAction(() => {
-        this.sessionDao.user_id = null;
-      });
+    runInAction(() => {
+      this.sessionDao.user_id = null;
     });
+    return this.sessionService.logout();
   }
 }
 
