@@ -1,6 +1,6 @@
 import { Loadable } from "@/lib/utils/Loadable";
 import React from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Platform, View } from "react-native";
 import { FAB, List, Surface, Text, TouchableRipple } from "react-native-paper";
 
 export type EventsListProps = {
@@ -17,9 +17,15 @@ function EventsList(props: EventsListProps) {
   return (
     <>
       <FlatList
-        className="p-4"
+        className={
+          /* Temporary fixed for doubled padding in web 
+             when swipe to refresh is enabled. */
+          Platform.OS == "web" ? "p-2" : "p-4"
+        }
         refreshing={props.events.isLoading}
-        onRefresh={props.handleRefresh}
+        onRefresh={() => {
+          props.handleRefresh();
+        }}
         data={data}
         ListHeaderComponent={
           <View className="mb-2 flex-row items-center justify-between">
