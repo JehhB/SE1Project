@@ -70,22 +70,31 @@ export interface Database {
       }
       events: {
         Row: {
+          createdat: string | null
           creatorid: string
           eventid: string
           eventname: string
+          expired: boolean
           isstrict: boolean
+          shortid: string
         }
         Insert: {
+          createdat?: string | null
           creatorid: string
           eventid?: string
           eventname: string
+          expired?: boolean
           isstrict: boolean
+          shortid?: string
         }
         Update: {
+          createdat?: string | null
           creatorid?: string
           eventid?: string
           eventname?: string
+          expired?: boolean
           isstrict?: boolean
+          shortid?: string
         }
         Relationships: [
           {
@@ -197,7 +206,23 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      nanoid: {
+        Args: {
+          size?: number
+          alphabet?: string
+          additionalbytesfactor?: number
+        }
+        Returns: string
+      }
+      nanoid_optimized: {
+        Args: {
+          size: number
+          alphabet: string
+          mask: number
+          step: number
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

@@ -4,6 +4,8 @@ export type CreatedEvent = {
   id: string;
   name: string;
   isstrict: boolean;
+  shortid: string;
+  expired: boolean;
   rollcalls: {
     id: string;
     description: string;

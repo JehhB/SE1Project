@@ -15,7 +15,7 @@ export class CreatedEventsService implements ICreatedEventsService {
     const resp = await this.supabase
       .from("events")
       .select(
-        "id:eventid,name:eventname,isstrict,rollcalls(id:rollcallid,location,timestart,timeend,description)",
+        "id:eventid,name:eventname,shortid,isstrict,expired,rollcalls(id:rollcallid,location,timestart,timeend,description)",
       )
       .order("eventid")
       .eq("creatorid", userId);
