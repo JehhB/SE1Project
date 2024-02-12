@@ -1,10 +1,13 @@
+import { Json } from "../source/supabase.type";
+
 export type CreatedEvent = {
   id: string;
   name: string;
-  isstrict: boolean | null;
+  isstrict: boolean;
   rollcalls: {
     id: string;
-    location: string;
+    description: string;
+    location: Json;
     timestart: string;
     timeend: string;
   }[];

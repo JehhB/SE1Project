@@ -42,7 +42,7 @@ export interface Database {
           timestamp: string
         }
         Insert: {
-          attendanceid: string
+          attendanceid?: string
           registeredeventid: string
           rollcallid: string
           timestamp: string
@@ -73,19 +73,19 @@ export interface Database {
           creatorid: string
           eventid: string
           eventname: string
-          isstrict: boolean | null
+          isstrict: boolean
         }
         Insert: {
           creatorid: string
-          eventid: string
+          eventid?: string
           eventname: string
-          isstrict?: boolean | null
+          isstrict: boolean
         }
         Update: {
           creatorid?: string
           eventid?: string
           eventname?: string
-          isstrict?: boolean | null
+          isstrict?: boolean
         }
         Relationships: [
           {
@@ -131,7 +131,7 @@ export interface Database {
         }
         Insert: {
           eventid: string
-          registeredeventid: string
+          registeredeventid?: string
           registeredname: string
           sessionid: string
           userid?: string | null
@@ -160,22 +160,25 @@ export interface Database {
       }
       rollcalls: {
         Row: {
+          description: string
           eventid: string
-          location: string
+          location: Json
           rollcallid: string
           timeend: string
           timestart: string
         }
         Insert: {
+          description: string
           eventid: string
-          location: string
-          rollcallid: string
+          location: Json
+          rollcallid?: string
           timeend: string
           timestart: string
         }
         Update: {
+          description?: string
           eventid?: string
-          location?: string
+          location?: Json
           rollcallid?: string
           timeend?: string
           timestart?: string

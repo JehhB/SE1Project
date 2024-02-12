@@ -31,4 +31,21 @@ export class CreatedEventsRepository implements ICreatedEventsRepository {
   getCreatedEvents(): Loadable<CreatedEvent[]> {
     return this.createdEvents;
   }
+
+  createEvent(
+    name: string,
+    isstrict: boolean,
+    rollcalls: {
+      description: string;
+      location: [lat: number, lng: number][];
+      timestart: string;
+      timeend: string;
+    }[],
+  ): Promise<void> {
+    return this.createdEventsService
+      .createEvent(name, isstrict, rollcalls)
+      .then(() => {
+        this.refetchEvents();
+      });
+  }
 }

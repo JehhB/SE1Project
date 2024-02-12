@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { RollcallsContext } from "./EventCreate";
+import React, { useContext, useRef, useState } from "react";
+import { CreateEventContext } from "./EventCreate";
 import { ScrollView, View, Image, TextInput as _TextInput } from "react-native";
 import {
   Appbar,
@@ -21,26 +21,54 @@ export type RollcallEditProps = {
   goBack(): void;
 };
 
-function RollcallEdit(props: RollcallEditProps) {
-  const [rollcall, setRollcalls] = useContext(RollcallsContext);
+function findLocationIndex(coordinates: [lat: number, lng: number][]): number {
+  return locations.findIndex(
+    (location) =>
+      location.coordinates.length === coordinates.length &&
+      location.coordinates.reduce(
+        (prev, [lat, lng], i) =>
+          prev && coordinates[i][0] === lat && coordinates[i][1] === lng,
+        true,
+      ),
+  );
+}
 
-  const index = rollcall.findIndex((item) => item._key == props._key);
+function midnight(date: Date) {
+  return set({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }, date);
+}
+
+function getTime(date: Date) {
+  return { minutes: date.getMinutes(), hours: date.getHours() };
+}
+
+function RollcallEdit(props: RollcallEditProps) {
+  const [rollcalls, setRollcalls] = useContext(CreateEventContext).rollcalls;
+
+  const index = rollcalls.findIndex((item) => item._key == props._key);
   const adding = index === -1;
 
   const [description, setDescription] = useState(
-    adding ? "" : rollcall[index].description,
+    adding ? "" : rollcalls[index].description,
   );
 
   const [dateVisibility, setDateVisibility] = useState(false);
-  const [timeStartPickerVisibility, showTimeStart] = useState(false);
-  const [timeEndPickerVisibility, showTimeEnd] = useState(false);
-  const [locationId, setLocationId] = useState(0);
+  const [timeStartPickerVisibility, showTimestart] = useState(false);
+  const [timeEndPickerVisibility, showTimeend] = useState(false);
 
-  const [timestart, setTimestart] = useState(
-    adding ? new Date() : rollcall[index].timestart,
+  const loc = adding ? 0 : findLocationIndex(rollcalls[index].location);
+  const [locationId, setLocationId] = useState(loc == -1 ? 0 : loc);
+
+  const [date, setDate] = useState(
+    adding ? midnight(new Date()) : midnight(rollcalls[index].timestart),
   );
+  const [timestart, setTimestart] = useState(
+    adding ? getTime(new Date()) : getTime(rollcalls[index].timestart),
+  );
+
   const [timeend, setTimeend] = useState(
-    adding ? addMinutes(15, new Date()) : rollcall[index].timeend,
+    adding
+      ? getTime(addMinutes(15, new Date()))
+      : getTime(rollcalls[index].timeend),
   );
 
   const [snackbar, alert] = useSnackbar();
@@ -53,30 +81,25 @@ function RollcallEdit(props: RollcallEditProps) {
       return;
     }
 
+    const startTimestamp = set(timestart, date);
+    let endTimestamp = set(timeend, date);
+    if (startTimestamp >= endTimestamp) {
+      endTimestamp = addDays(1, endTimestamp);
+    }
+
+    const rollcall = {
+      _key: props._key,
+      description,
+      timestart: startTimestamp,
+      timeend: endTimestamp,
+      location: locations[locationId].coordinates,
+    };
+
     if (adding) {
-      setRollcalls((prev) => [
-        ...prev,
-        {
-          _key: props._key,
-          description,
-          timestart,
-          timeend,
-          location: locations[locationId].coordinates,
-        },
-      ]);
+      setRollcalls((prev) => [...prev, rollcall]);
     } else {
       setRollcalls((prev) =>
-        prev.map((item) =>
-          item._key === props._key
-            ? {
-                _key: props._key,
-                description,
-                timestart,
-                timeend,
-                location: locations[locationId].coordinates,
-              }
-            : item,
-        ),
+        prev.map((item) => (item._key === props._key ? rollcall : item)),
       );
     }
 
@@ -110,7 +133,7 @@ function RollcallEdit(props: RollcallEditProps) {
         <View className="mb-4 flex-row justify-between">
           <View>
             <Text variant="labelLarge">Date</Text>
-            <Text>{format(timestart, "MM/dd")}</Text>
+            <Text>{format(date, "MM/dd")}</Text>
           </View>
           <Button mode="outlined" onPress={() => setDateVisibility(true)}>
             Set date
@@ -119,18 +142,18 @@ function RollcallEdit(props: RollcallEditProps) {
         <View className="mb-4 flex-row justify-between">
           <View>
             <Text variant="labelLarge">Time start</Text>
-            <Text>{format(timestart, "hh:mm aa")}</Text>
+            <Text>{format(set(timestart, new Date()), "hh:mm aa")}</Text>
           </View>
-          <Button mode="outlined" onPress={() => showTimeStart(true)}>
+          <Button mode="outlined" onPress={() => showTimestart(true)}>
             Set start
           </Button>
         </View>
         <View className="mb-4 flex-row justify-between">
           <View>
             <Text variant="labelLarge">Time end</Text>
-            <Text>{format(timeend, "hh:mm aa")}</Text>
+            <Text>{format(set(timeend, new Date()), "hh:mm aa")}</Text>
           </View>
-          <Button mode="outlined" onPress={() => showTimeEnd(true)}>
+          <Button mode="outlined" onPress={() => showTimeend(true)}>
             Set end
           </Button>
         </View>
@@ -153,13 +176,13 @@ function RollcallEdit(props: RollcallEditProps) {
             >
               <TouchableRipple
                 onPress={() => setLocationId(i)}
-                className="flex-row items-center gap-2 rounded p-2"
+                className="rounded p-2"
               >
-                <>
+                <View className="flex-row items-center gap-2">
                   <Image source={loc.image} style={{ width: 80, height: 80 }} />
                   <RadioButton value={String(i)} />
                   <Text>{loc.name}</Text>
-                </>
+                </View>
               </TouchableRipple>
             </Surface>
           ))}
@@ -171,44 +194,36 @@ function RollcallEdit(props: RollcallEditProps) {
           visible={dateVisibility}
           onDismiss={() => setDateVisibility(false)}
           onConfirm={({ date }) => {
-            const currentTime = set(
-              { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 },
-              new Date(),
-            );
-            const selectedTime = new Date(date?.toDateString()!);
-            if (selectedTime >= currentTime) {
-              setTimestart(selectedTime);
+            if (date !== undefined) {
+              const currentDate = midnight(new Date());
+              const selectedDate = midnight(date);
+
+              if (selectedDate >= currentDate) {
+                setDate(date);
+              }
             }
+
             setDateVisibility(false);
           }}
         />
         <TimePickerModal
           locale="en"
           visible={timeStartPickerVisibility}
-          hours={timestart.getHours()}
-          minutes={timestart.getMinutes()}
-          onDismiss={() => showTimeStart(false)}
+          {...timestart}
+          onDismiss={() => showTimestart(false)}
           onConfirm={(time) => {
-            let selectedTime = set(time, timestart);
-            if (selectedTime > timeend) {
-              setTimeend((prev) => addDays(1, prev));
-            }
-            setTimestart(selectedTime);
-            showTimeStart(false);
+            setTimestart(time);
+            showTimestart(false);
           }}
         />
         <TimePickerModal
           locale="en"
           visible={timeEndPickerVisibility}
-          onDismiss={() => showTimeEnd(false)}
-          hours={timeend.getHours()}
-          minutes={timeend.getMinutes()}
+          onDismiss={() => showTimeend(false)}
+          {...timeend}
           onConfirm={(time) => {
-            let selectedTime = set(time, timestart);
-            if (timestart > selectedTime)
-              selectedTime = addDays(1, selectedTime);
-            setTimeend(selectedTime);
-            showTimeEnd(false);
+            setTimeend(time);
+            showTimeend(false);
           }}
         />
       </ScrollView>

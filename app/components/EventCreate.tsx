@@ -1,6 +1,7 @@
+import useSnackbar from "@/lib/hooks/useSnackbar";
 import { nanoid } from "nanoid";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
+import React, { createContext, useContext, useRef, useState } from "react";
+import { FlatList, View, TextInput as _TextInput } from "react-native";
 import {
   Appbar,
   Button,
@@ -27,23 +28,51 @@ export type EventCreateProps = {
   editRollcall(key: string): void;
 };
 
-export const RollcallsContext = createContext<
-  [RollcallInfo[], React.Dispatch<React.SetStateAction<RollcallInfo[]>>]
->([[], () => {}]);
+export const CreateEventContext = createContext<{
+  rollcalls: [
+    RollcallInfo[],
+    React.Dispatch<React.SetStateAction<RollcallInfo[]>>,
+  ];
+  name: [string, React.Dispatch<React.SetStateAction<string>>];
+  strictness: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+}>({
+  rollcalls: [[], () => {}],
+  name: ["", () => {}],
+  strictness: [false, () => {}],
+});
 
 export function EventCreateProvider(props: { children: React.ReactNode }) {
   const rollcalls = useState<RollcallInfo[]>([]);
+  const name = useState("");
+  const strictness = useState(false);
+
   return (
-    <RollcallsContext.Provider value={rollcalls}>
+    <CreateEventContext.Provider value={{ rollcalls, name, strictness }}>
       {props.children}
-    </RollcallsContext.Provider>
+    </CreateEventContext.Provider>
   );
 }
 
 function EventCreate(props: EventCreateProps) {
-  const [name, setName] = useState("");
-  const [isStrict, setStrictness] = useState(false);
-  const [rollcalls, setRollcalls] = useContext(RollcallsContext);
+  const context = useContext(CreateEventContext);
+
+  const [name, setName] = context.name;
+  const [isStrict, setStrictness] = context.strictness;
+  const [rollcalls, setRollcalls] = context.rollcalls;
+
+  const [snackbar, alert] = useSnackbar();
+
+  const nameRef = useRef<_TextInput>(null);
+  function handleCreate() {
+    if (name.length === 0) {
+      alert("Event name is required");
+      nameRef.current?.focus();
+    } else if (rollcalls.length === 0) {
+      alert("Atleast one rollcall is required");
+    } else {
+      props.createEvent(name, isStrict, rollcalls);
+    }
+  }
 
   return (
     <View className="flex-1">
@@ -54,7 +83,7 @@ function EventCreate(props: EventCreateProps) {
           }}
         />
         <Appbar.Content title="Create event" />
-        <Appbar.Action icon="check" />
+        <Appbar.Action icon="check" onPress={handleCreate} />
       </Appbar.Header>
 
       <View className="flex-1 p-4">
@@ -63,6 +92,7 @@ function EventCreate(props: EventCreateProps) {
             Information
           </Text>
           <TextInput
+            ref={nameRef}
             label="Event name"
             className="mb-2"
             mode="outlined"
@@ -133,6 +163,7 @@ function EventCreate(props: EventCreateProps) {
           />
         </View>
       </View>
+      {snackbar}
     </View>
   );
 }

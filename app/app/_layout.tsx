@@ -5,12 +5,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { PaperProvider, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { polyfillWebCrypto } from "expo-standard-web-crypto";
 
 import "./global.css";
 import { AppContainer, useAppContainer } from "@/lib/AppContainer";
 
 export { ErrorBoundary } from "expo-router";
 
+polyfillWebCrypto();
 export const unstable_settings = {
   initialRouteName: "(index)",
 };
